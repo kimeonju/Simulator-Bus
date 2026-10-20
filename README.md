@@ -54,16 +54,21 @@ input[type=checkbox]{accent-color:var(--green)}
 </header>
 <main>
 <section class="hud">
-<div class="metric"><small>속도</small><div class="value"><span id="speed">0</span> <small>km/h</small></div></div>
-<div class="metric"><small>주행 거리</small><div class="value"><span id="distance">0.0</span> <small>km</small></div></div>
+<div class="metric"><small>속도 (<span id="speedUnit">km/h</span>)</small><div class="value"><span id="speed">0</span> <small id="speedUnitSmall">km/h</small></div></div>
+<div class="metric"><small>주행 거리</small><div class="value"><span id="distance">0.0</span> <small id="distUnitSmall">km</small></div></div>
 <div class="metric"><small>기어</small><div class="value" id="gearDisplay">1</div></div>
 <div class="metric"><small>승객</small><div class="value"><span id="passengers">0</span><small> / 27명</small></div></div>
 </section>
 <div class="grid">
 <div>
 <section class="panel">
-<div class="between"><h2>전방 도로 / ECDIS 해도 뷰</h2><span id="roadStatus" class="good">서울 반포</span></div>
+<div class="between"><h2>전방 도로 / ECDIS 해도 뷰 (마우스 휠로 확대/축소 가능)</h2><span id="roadStatus" class="good">서울 반포</span></div>
 <canvas id="road" width="960" height="420"></canvas>
+<div class="row" style="margin-top:8px;justify-content:center">
+<button id="zoomIn">🔍 확대 (+)</button>
+<button id="zoomReset">줌 초기화 (1.0x)</button>
+<button id="zoomOut">🔍 축소 (-)</button>
+</div>
 <div class="mirrors">
 <div><small>좌측 사이드미러</small><canvas id="mirrorL" width="400" height="90"></canvas></div>
 <div><small>우측 사이드미러</small><canvas id="mirrorR" width="400" height="90"></canvas></div>
@@ -85,7 +90,7 @@ input[type=checkbox]{accent-color:var(--green)}
 <section class="panel" style="margin-top:14px">
 <h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b></div>
 <div class="row"><button id="landMode" class="active">육상 주행</button><button id="waterMode">수상 주행 모드 (시천나루)</button></div>
-<small>수상 모드 시 운전석 전방 기준 왼쪽(←)은 좌회전(좌현), 오른쪽(→)은 우회전(우현)으로 초당 20도씩 조향됩니다.</small>
+<small>수상 모드 시 1노트(kn) = 1시간에 1해리(1.852km) 단위로 해상 거리가 정밀 계산되며, 휠로 확대/축소할 수 있습니다.</small>
 </section>
 </div>
 <div>
@@ -105,7 +110,7 @@ input[type=checkbox]{accent-color:var(--green)}
 <div><div class="between"><label for="closeFreq">닫힘 부저 주파수</label><b><span id="closeFreqText">580</span> Hz</b></div><input id="closeFreq" type="range" min="500" max="580" step="10" value="580"></div>
 </div>
 <div class="row"><button id="testOpen">열림 부저 시험</button><button id="testClose">닫힘 부저 시험</button></div>
-<small>주행 중에도 문을 열고 닫을 수 있습니다. 문이 열린 상태에서도 주행이 가능합니다. 부저 주파수는 슬라이더로 조절하세요.</small>
+<small>주행 중에도 문을 열고 닫을 수 있습니다. 부저 주파수는 슬라이더로 조절하세요.</small>
 </div>
 <div class="section">
 <h2>하부 짐칸</h2><div class="status">짐칸 상태: <b id="cargoState">모든 짐칸 닫힘</b></div>
@@ -123,7 +128,7 @@ input[type=checkbox]{accent-color:var(--green)}
 <section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh</small></section>
 <section class="panel" style="margin-top:14px"><div class="between"><h2>운행 기록</h2><button id="clearLog">기록 지우기</button></div><div id="log"></div></section>
 </div></div>
-<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌회전(좌현) / <kbd>→</kbd> 우회전(우현)</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div><div class="row" style="margin-top:8px"><span><kbd>W</kbd>+<kbd>O</kbd> 좌측 문 열기</span><span><kbd>W</kbd>+<kbd>P</kbd> 좌측 문 닫기</span><span><kbd>E</kbd>+<kbd>O</kbd> 우측 문 열기</span><span><kbd>E</kbd>+<kbd>P</kbd> 우측 문 닫기</span></div></section>
+<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌회전(좌현) / <kbd>→</kbd> 우회전(우현)</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div></section>
 </main>
 <footer>연두 Yeondoo FCEV · 경부고속도로 · 27석 · 수륙양용 시뮬레이션</footer>
 <script>
@@ -135,68 +140,29 @@ const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v))
 const GEAR_MAP={Digit5:"1",Numpad5:"1",Digit6:"2",Numpad6:"2",Digit7:"3",Numpad7:"3",Digit8:"4",Numpad8:"4",Digit9:"5",Numpad9:"5",Digit4:"N",Numpad4:"N",Digit3:"R1",Numpad3:"R1",Digit2:"R2",Numpad2:"R2",Digit1:"R3",Numpad1:"R3"},FCAP={"1":25,"2":45,"3":70,"4":105,"5":197},RCAP={R1:10,R2:20,R3:30};
 const MAIN_STOPS=[0,160,416.2];
 const REST_STOPS=[{name:"판교휴게소",km:18},{name:"천안호두휴게소",km:95},{name:"김천휴게소",km:255},{name:"경주휴게소",km:365}];
-let s,steerCooldown=0,audioCtx=null;
+let s,steerCooldown=0,audioCtx=null,zoomLevel=1.0;
 function freshState(){return{speed:0,distance:0,lane:3,steer:0,mode:"manual",gear:"D1",manualGear:"1",clutch:false,leftDoor:false,rightDoor:false,doorBusy:false,signal:"off",hazard:false,passengers:0,h2:33,battery:47,revenue:0,fuelCost:0,electricCost:0,ac:false,heater:false,fan:3,cruise:null,paused:false,finished:false,stopIndex:0,log:[],doorTimer:null,boardDone:false,lastDirection:"forward",terrain:"land",cargo:[false,false,false],restRequest:false,nextRestIndex:0,atRest:null}}
 s=freshState();
 function log(m){s.log.unshift("["+new Date().toLocaleTimeString("ko-KR",{hour12:false})+"] "+m);s.log=s.log.slice(0,100);$("log").innerHTML=s.log.map(v=>"<div>"+v.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))+"</div>").join("")}
 function notify(m){$("roadStatus").textContent=m;log(m)}
 function atStop(){return s.speed<.1&&(Math.abs(s.distance-MAIN_STOPS[s.stopIndex])<.08||s.atRest!==null)}
-function doorsClosed(){return !s.doorBusy}
 function gear(){return s.mode==="auto"?s.gear:s.manualGear}
 function capSpeed(){const g=gear();if(g==="N")return 0;if(g.startsWith("R"))return RCAP[g]||10;return s.mode==="auto"?197:(FCAP[g]||25)}
 function canDrive(){return !s.paused&&!s.finished&&s.h2>.001&&!(s.mode==="manual"&&s.clutch)&&gear()!=="N"&&s.cargo.every(v=>!v)}
 function beep(freq,duration=.22){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!audioCtx)audioCtx=new AC();audioCtx.resume().then(()=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain(),now=audioCtx.currentTime;o.type="sine";o.frequency.setValueAtTime(Number(freq),now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.22,now+.018);g.gain.setValueAtTime(.22,now+duration*.65);g.gain.exponentialRampToValueAtTime(.0001,now+duration);o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+duration+.02);o.onended=()=>{o.disconnect();g.disconnect()}}).catch(()=>{})}catch(e){console.warn(e)}}
-function doorBeep(kind){beep(kind==="open"?$("openFreq").value:$("closeFreq").value,kind==="open"?.22:.32)}
-function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요.");return}const old=s.manualGear,oldDir=old==="N"?s.lastDirection:old.startsWith("R")?"reverse":"forward",newDir=g==="N"?null:g.startsWith("R")?"reverse":"forward";if(s.speed>.1&&newDir!==null&&newDir!==oldDir){notify("전진과 후진 사이의 변속은 완전히 정차한 뒤 가능합니다.");return}s.manualGear=g;if(newDir)s.lastDirection=newDir;if(g==="N"||g.startsWith("R"))s.cruise=null;notify(old+" → "+g+" 변속 완료");render()}
-function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다.");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;notify(s.mode==="auto"?"자동변속 모드":"수동변속 모드");render()}
-function setClutch(v){if(s.mode!=="manual"){if(v)notify("클러치는 수동 모드에서만 작동합니다.");return}s.clutch=v;render()}
-function setSignal(v){s.hazard=false;s.signal=s.signal===v?"off":v;render()}
-
-function setDoor(side,open){
- if(s.doorBusy)return;
- if(open){
-  if(side==="left")s.leftDoor=true;else s.rightDoor=true;
-  s.cruise=null;
-  doorBeep("open");
-  notify((side==="left"?"좌측":"우측")+" 문 열림 · 열림 부저");
-  render();
-  return;
- }
- const opened=side==="left"?s.leftDoor:s.rightDoor;
- if(!opened){notify("해당 문은 이미 닫혀 있습니다.");return}
- s.doorBusy=true;
- doorBeep("close");
- notify("문 닫는 중… · 닫힘 부저");
- render();
- clearTimeout(s.doorTimer);
- s.doorTimer=setTimeout(()=>{
-  s.doorBusy=false;
-  if(side==="left")s.leftDoor=false;else s.rightDoor=false;
-  notify((side==="left"?"좌측":"우측")+" 문 닫힘");
-  render();
- },1000);
-}
-function serviceStop(){if(!atStop()||(!s.leftDoor&&!s.rightDoor)){notify("정류장에 정차하고 문을 열어 승객 승하차를 진행하세요.");return}if(s.atRest!==null){notify(s.atRest+" 정차 완료 · 휴식/점검 후 출발 준비를 누르세요.");s.boardDone=true;render();return}const d=[{b:24,a:0},{b:12,a:14},{b:0,a:27}][s.stopIndex],a=Math.min(s.passengers,d.a);s.passengers-=a;const b=Math.min(d.b,CAPACITY-s.passengers);s.passengers+=b;s.boardDone=true;notify(`${a}명 하차, ${b}명 승차. 현재 ${s.passengers}/${CAPACITY}명`);render()}
-function depart(){if(!atStop()){notify("정류장 또는 휴게소에 완전히 정차해야 합니다.");return}if(s.atRest!==null){notify(s.atRest+" 출발");s.atRest=null;s.restRequest=false;s.boardDone=true;render();return}if(s.stopIndex===2){s.finished=true;notify("부산센텀 종점. 운행 종료!");render();return}if(!s.boardDone){notify("승객 승하차를 먼저 진행하세요.");return}if(gear().startsWith("R")){notify("전진 기어를 선택하세요.");return}s.signal="left";notify("출발 준비 완료. ↑ 키로 가속하세요.");render()}
-function refuel(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요.");return}const n=33-s.h2;if(n<.001){notify("수소가 가득 찼습니다.");return}s.h2=33;s.fuelCost+=n*12000;notify(`수소 ${n.toFixed(2)} kg 충전 · ${fmt(n*12000)}원`);render()}
-function recharge(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요.");return}const n=47-s.battery;if(n<.001){notify("배터리가 가득 찼습니다.");return}s.battery=47;s.electricCost+=n*190;notify(`배터리 ${n.toFixed(1)} kWh 충전 · ${fmt(n*190)}원`);render()}
-function setCruise(v){if(v!==null&&(s.speed<1||!canDrive())){notify("주행 중에 정속 주행을 설정하세요.");return}s.cruise=v;notify(v===null?"정속 주행 해제":`정속 주행 ${v} km/h`);render()}
-function laneChange(d){if(s.speed<.1)return;const maxLane=s.distance<160?4:3,n=clamp(s.lane+d,1,maxLane);if(n===s.lane)return;s.lane=n;notify(n+"차로로 변경")}
-function stopAt(i){s.speed=0;s.cruise=null;s.stopIndex=i;s.boardDone=false;s.atRest=null;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(["서울반포","대전","부산센텀"][i]+" 정류장 도착");if(i===2){s.finished=true;notify("부산센텀 종점 도착. 운행 종료!")}}
-function stopAtRest(rest){s.speed=0;s.cruise=null;s.atRest=rest.name;s.boardDone=true;s.restRequest=false;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(rest.name+" 도착 · 필요 시 정차");render()}
-function autoShift(){if(s.mode==="auto")s.gear=s.speed<18?"D1":s.speed<38?"D2":s.speed<62?"D3":s.speed<95?"D4":"D5"}
+function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요.");return}s.manualGear=g;render()}
+function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다.");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;render()}
+function setClutch(v){if(s.mode!=="manual"){return}s.clutch=v;render()}
 
 function update(dt){
  if(s.paused||s.finished)return;
-
- // 조향(타각/좌·우현 회전) 제어: 수상 모드에서는 좌측키=좌회전(음수 타각), 우측키=우회전(양수 타각), 초당 20도
  const steerRate = s.terrain==="water" ? 20 : 60; 
  if(pressed.has("ArrowLeft")){
   s.steer=clamp(s.steer - steerRate*dt, -60, 60);
-  if(s.terrain==="land" && steerCooldown<=0){laneChange(-1);steerCooldown=2}
+  if(s.terrain==="land" && steerCooldown<=0){if(s.lane>1)s.lane--;steerCooldown=2}
  } else if(pressed.has("ArrowRight")){
   s.steer=clamp(s.steer + steerRate*dt, -60, 60);
-  if(s.terrain==="land" && steerCooldown<=0){laneChange(1);steerCooldown=2}
+  if(s.terrain==="land" && steerCooldown<=0){if(s.lane<(s.distance<160?4:3))s.lane++;steerCooldown=2}
  } else {
   s.steer += (0 - s.steer) * Math.min(1, dt * 4);
   steerCooldown=0;
@@ -208,51 +174,49 @@ function update(dt){
  else if(accel&&canDrive())s.speed+=3*dt;
  else if(!accel&&!brake)s.speed=Math.max(0,s.speed-.25*dt);
  if(brake){s.speed=Math.max(0,s.speed-6*dt);s.cruise=null}
- if(!canDrive()&&accel)s.speed=Math.max(0,s.speed-1.5*dt);
  s.speed=clamp(s.speed,0,capSpeed());
- const km=s.speed*dt/3600;
- if(km>0&&s.speed>0){
-  const rev=gear().startsWith("R");
-  if(rev){
-   const prev=MAIN_STOPS[Math.max(0,s.stopIndex-1)];
-   if(s.distance-km<=prev){s.distance=prev;s.speed=0;notify("이전 정류장까지만 후진할 수 있습니다.")}
-   else{s.distance-=km;s.h2=Math.max(0,s.h2-km*.036)}
-  }else{
-   const target=MAIN_STOPS[Math.min(2,s.stopIndex+1)];
-   let restHit=null;
-   if(s.restRequest)restHit=REST_STOPS.find(r=>r.km>s.distance&&r.km<=s.distance+km);
-   if(restHit){s.distance=restHit.km;stopAtRest(restHit)}
-   else if(target-s.distance<=km){s.distance=target;stopAt(Math.min(2,s.stopIndex+1))}
-   else{s.distance+=km;s.revenue+=km*2000;s.h2=Math.max(0,s.h2-km*.036)}
+ 
+ // 거리 계산: 육상(km/h -> km), 수상(노트/kn -> 해리, 1해리 = 1.852km)
+ const speedVal = s.speed;
+ const distIncrement = s.terrain==="water" 
+  ? (speedVal * 1.852 * dt / 3600) // 1노트 = 1시간에 1해리(1.852km)
+  : (speedVal * dt / 3600);        // 1km/h = 1시간에 1km
+
+ if(distIncrement>0 && speedVal>0){
+  s.distance += distIncrement;
+  if(s.terrain==="land"){
+   s.revenue += distIncrement * 2000;
+   s.h2 = Math.max(0, s.h2 - distIncrement * 0.036);
+  } else {
+   s.h2 = Math.max(0, s.h2 - distIncrement * 0.02);
   }
  }
- if(s.ac||s.heater)s.battery=Math.max(0,s.battery-.5*(s.fan/5)*dt/3600);
- autoShift();render();
+ render();
 }
 
 function drawRoad(){
  const c=$("road"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);
  
  if(s.terrain==="water"){
-  // 국립해양조사원 개방해 ECDIS 기준 경인아라뱃길 시천나루 실제 지형 렌더링
+  x.save();
+  // 줌 확대/축소 적용 중심점 이동
+  x.translate(w/2, h/2);
+  x.scale(zoomLevel, zoomLevel);
+  x.translate(-w/2, -h/2);
+
   x.fillStyle="#c2e0e5";x.fillRect(0,0,w,h);
   
-  // 아라뱃길 수변 육지 (좌측 북측 수변공원 및 우측 검암역/시천공원 일대 지형)
   x.fillStyle="#e6d5a9";
   x.beginPath();x.moveTo(0,0);x.lineTo(w*0.32,0);x.lineTo(w*0.28,h);x.lineTo(0,h);x.closePath();x.fill();
   x.beginPath();x.moveTo(w*0.68,0);x.lineTo(w,0);x.lineTo(w,h);x.lineTo(w*0.72,h);x.closePath();x.fill();
 
-  // 경인아라뱃길 가로지르는 실제 '시천교' 교량 구조물
   x.strokeStyle="#55606d";x.lineWidth=6;
   x.beginPath();x.moveTo(w*0.2, h*0.42);x.lineTo(w*0.8, h*0.42);x.stroke();
-  x.fillStyle="#1f2937";x.font="11px sans-serif";x.fillText("시천교 (Choncheon Bridge)", w*0.22, h*0.39);
 
-  // 등심선 (수심 경계선)
   x.strokeStyle="#2a7585";x.lineWidth=1.5;x.setLineDash([6,4]);
   x.beginPath();x.moveTo(w*0.35,0);x.lineTo(w*0.32,h*0.5);x.lineTo(w*0.38,h);x.stroke();
   x.setLineDash([]);
 
-  // 운전석 전방 기준 좌/우 조향(좌회전/우회전)에 따라 꺾이는 마젠타 항로선
   x.strokeStyle="#d600bc";x.lineWidth=3;x.setLineDash([10,6]);
   x.beginPath();
   let steerOffset = s.steer * 1.8;
@@ -261,109 +225,89 @@ function drawRoad(){
   x.stroke();
   x.setLineDash([]);
 
-  // 표준 수심 표기 (미터 단위)
-  x.fillStyle="#1c444f";x.font="bold 12px sans-serif";
-  x.fillText("6.3m", w*0.43, h*0.22);
-  x.fillText("5.9m", w*0.56, h*0.65);
-  x.fillText("6.1m", w*0.47, h*0.82);
-
-  // 시천나루 선착장 마크 (시천가람터)
   x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.42, 6, 0, Math.PI*2);x.fill();
-  x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터 선착장)", w*0.52, h*0.43);
+  x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터)", w*0.52, h*0.43);
+  x.restore();
 
-  // ECDIS 정보 상단 패널
-  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,440,75);
+  // ECDIS 상단 정보 패널 (줌 배율 포함)
+  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,460,75);
   x.fillStyle="#49e0a0";x.font="bold 15px sans-serif";
-  x.fillText("🗺️ 개방해 API ECDIS · 경인아라뱃길 시천나루", 25, 38);
+  x.fillText("🗺️ 개방해 API ECDIS · 시천나루 (해상 항해)", 25, 38);
   x.fillStyle="#eef6ff";x.font="12px sans-serif";
-  x.fillText(`위치: +${s.distance.toFixed(1)} km · 속도: ${Math.round(s.speed)} km/h · 타각: ${Math.round(s.steer)}°`, 25, 60);
+  x.fillText(`항해거리: +${s.distance.toFixed(2)} 해리(NM) · 속도: ${Math.round(s.speed)} kn (줌: ${zoomLevel.toFixed(1)}x)`, 25, 60);
   x.fillStyle="#ffc45c";x.font="11px sans-serif";
-  x.fillText(`조향: 전방 기준 ← 좌회전(좌현) / → 우회전(우현) 초당 20도`, 25, 78);
+  x.fillText(`마우스 휠 또는 버튼으로 지도 확대/축소 가능`, 25, 78);
   return;
  }
 
+ // 육상 도로 뷰
  const g=x.createLinearGradient(0,0,0,h*.55);g.addColorStop(0,"#17344b");g.addColorStop(1,"#8bb3c3");x.fillStyle=g;x.fillRect(0,0,w,h);
- x.fillStyle="#263d36";x.fillRect(0,h*.4,w,h*.6);x.fillStyle="#344f4d";x.beginPath();x.moveTo(0,h*.48);for(let a=0;a<=w;a+=60)x.lineTo(a,h*(.34+Math.abs(Math.sin(a*.012))*.12));x.lineTo(w,h*.6);x.lineTo(0,h*.6);x.fill();
+ x.fillStyle="#263d36";x.fillRect(0,h*.4,w,h*.6);
  const hy=h*.4,ny=h*.96,cx=w/2,rn=w*.94,rf=w*.22,n=s.distance<160?4:3;
  x.fillStyle="#343b43";x.beginPath();x.moveTo(cx-rf/2,hy);x.lineTo(cx+rf/2,hy);x.lineTo(cx+rn/2,ny);x.lineTo(cx-rn/2,ny);x.closePath();x.fill();
- for(let i=0;i<n;i++){const xn=cx-rn/2+rn*i/n,xf=cx-rf/2+rf*i/n;if(s.distance<160&&i===0){x.fillStyle="#0876df";x.beginPath();x.moveTo(xf,hy);x.lineTo(xf+rf/n,hy);x.lineTo(xn+rn/n,ny);x.lineTo(xn,ny);x.closePath();x.fill();x.fillStyle="white";x.font="bold 13px sans-serif";x.fillText("BUS",xn+15,ny-20)}if(i>0){x.strokeStyle="#f4f5f5";x.lineWidth=2;x.setLineDash([12,13]);x.beginPath();x.moveTo(xf,hy);x.lineTo(xn,ny);x.stroke();x.setLineDash([])}}
+ for(let i=0;i<n;i++){const xn=cx-rn/2+rn*i/n,xf=cx-rf/2+rf*i/n;if(s.distance<160&&i===0){x.fillStyle="#0876df";x.beginPath();x.moveTo(xf,hy);x.lineTo(xf+rf/n,hy);x.lineTo(xn+rn/n,ny);x.lineTo(xn,ny);x.closePath();x.fill()}}
  x.strokeStyle="#f7d86d";x.lineWidth=4;x.beginPath();x.moveTo(cx-rn/2,ny);x.lineTo(cx-rf/2,hy);x.moveTo(cx+rn/2,ny);x.lineTo(cx+rf/2,hy);x.stroke();
  
- x.fillStyle="rgba(0,0,0,.55)";x.fillRect(12,12,280,52);x.fillStyle="#fff";x.font="bold 17px sans-serif";x.fillText(`${s.distance.toFixed(1)} km · ${Math.round(s.speed)} km/h`,22,34);x.font="12px sans-serif";x.fillText(`${s.lane}차로 · ${n}차로 도로`,22,52);
- if((s.signal!=="off"||s.hazard)&&Math.floor(performance.now()/400)%2===0){x.fillStyle="#ffbf45";x.font="bold 26px sans-serif";if(s.hazard||s.signal==="left")x.fillText("◀",w*.27,h*.78);if(s.hazard||s.signal==="right")x.fillText("▶",w*.68,h*.78)}
+ x.fillStyle="rgba(0,0,0,.55)";x.fillRect(12,12,280,52);x.fillStyle="#fff";x.font="bold 17px sans-serif";x.fillText(`${s.distance.toFixed(1)} km · ${Math.round(s.speed)} km/h`,22,34);
 }
-function drawMirror(id){const c=$(id),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.fillStyle=s.terrain==="water"?"#a2d2db":"#172b38";x.fillRect(0,0,w,h);x.fillStyle=s.terrain==="water"?"#c2e0e5":"#303c44";x.beginPath();x.moveTo(w*.35,0);x.lineTo(w*.65,0);x.lineTo(w,h);x.lineTo(0,h);x.closePath();x.fill();x.strokeStyle="#e2e7e9";x.setLineDash([10,10]);x.beginPath();x.moveTo(w*.5,0);x.lineTo(w*.5,h);x.stroke();x.setLineDash([])}
-function drawMap(){const c=$("map"),x=c.getContext("2d"),w=c.width,h=c.height;x.fillStyle="#101923";x.fillRect(0,0,w,h);const a=40,z=w-40,y=55;x.strokeStyle="#4c5b69";x.lineWidth=18;x.beginPath();x.moveTo(a,y);x.lineTo(z,y);x.stroke();x.strokeStyle="#238dff";x.lineWidth=7;x.beginPath();x.moveTo(a,y-7);x.lineTo(a+(z-a)*.385,y-7);x.stroke();x.strokeStyle="#a6b4c2";x.lineWidth=2;x.setLineDash([8,7]);x.beginPath();x.moveTo(a,y+2);x.lineTo(z,y+2);x.stroke();x.setLineDash([]);const names=[{n:"서울반포",k:0},{n:"판교휴게소",k:18},{n:"천안호두",k:95},{n:"대전",k:160},{n:"김천휴게소",k:255},{n:"경주휴게소",k:365},{n:"부산센텀",k:416.2}];for(const p of names){const px=a+(z-a)*p.k/416.2;x.fillStyle=REST_STOPS.some(r=>r.name.startsWith(p.n))?"#ffc45c":"#d9e7f2";x.beginPath();x.arc(px,y,REST_STOPS.some(r=>r.name.startsWith(p.n))?5:4,0,Math.PI*2);x.fill();x.fillStyle="#dce8f4";x.font="12px sans-serif";x.fillText(p.n,clamp(px-25,2,w-85),y+25)}const p=a+(z-a)*s.distance/416.2;x.fillStyle="#fff";x.beginPath();x.arc(p,y,9,0,Math.PI*2);x.fill();x.strokeStyle="#49e0a0";x.lineWidth=3;x.stroke();x.fillStyle="#8fbaff";x.font="12px sans-serif";x.fillText("경부고속도로 · 휴게소는 필요 시 정차[cite: 1]",a,120)}
-function render(){
- $("speed").textContent=Math.round(s.speed);$("distance").textContent=s.distance.toFixed(1);$("passengers").textContent=s.passengers;$("gearDisplay").textContent=gear();$("modeBadge").textContent=s.mode==="auto"?"자동변속":"수동변속";$("modeBtn").textContent=s.mode==="auto"?"수동변속으로 전환":"자동변속으로 전환";
- $("clutchState").textContent=s.clutch?"밟음":"해제";$("signalState").textContent=s.hazard?"비상등":s.signal==="off"?"꺼짐":s.signal==="left"?"좌측":"우측";
- $("doorState").textContent=s.doorBusy?"문 닫는 중":s.leftDoor&&s.rightDoor?"양쪽 문 열림":s.leftDoor?"좌측 문 열림":s.rightDoor?"우측 문 열림":"모든 문 닫힘";
- $("state").textContent=s.finished?"운행 종료":s.paused?"일시정지":s.speed>0?"주행 중":atStop()?"정류장 정차":"정차";
- $("h2Text").textContent=s.h2.toFixed(2)+" kg";$("batteryText").textContent=s.battery.toFixed(1)+" kWh";$("h2Bar").style.width=s.h2/33*100+"%";$("batteryBar").style.width=s.battery/47*100+"%";$("h2Bar").style.background=s.h2<5?"var(--red)":"var(--green)";
- $("revenue").textContent="₩"+fmt(s.revenue);$("fuelCost").textContent="₩"+fmt(s.fuelCost);$("electricCost").textContent="₩"+fmt(s.electricCost);const net=s.revenue-s.fuelCost-s.electricCost;$("net").textContent=(net<0?"−":"")+"₩"+fmt(Math.abs(net));$("net").className=net<0?"bad":"good";
- 
- const steerVal = Math.round(s.steer);
- $("steerDisplay").textContent = s.terrain==="water" ? (steerVal < 0 ? `좌회전/좌현 ${Math.abs(steerVal)}°` : steerVal > 0 ? `우회전/우현 ${steerVal}°` : `중앙 0°`) : `${steerVal}°`;
- $("steerBar").style.width=Math.abs(s.steer)/60*100+"%";
- $("steerLabel").textContent = s.terrain==="water" ? "타각 (좌회전/우회전)" : "핸들";
- $("left").textContent = s.terrain==="water" ? "◀ 좌회전 (좌현)" : "◀ 좌측 변경";
- $("right").textContent = s.terrain==="water" ? "우회전 (우현) ▶" : "우측 변경 ▶";
- $("center").textContent = s.terrain==="water" ? "타각 중앙정렬" : "핸들 중앙";
 
- $("laneDisplay").textContent=s.lane+"차로";$("laneDescription").textContent=s.distance<160?["버스전용차로","추월 차로","일반 주행 차로","시설 진출입 차로"][s.lane-1]:["추월 차로","주행 차로","시설 진출입 차로"][s.lane-1];
- $("cruiseText").textContent=s.cruise===null?"해제":s.cruise+" km/h";$("fanText").textContent=s.fan+"단";$("gearHelp").textContent=s.mode==="auto"?"자동변속 모드":"클러치를 밟고 변속";
- $("stopInfo").textContent=s.atRest?`${s.atRest}: 필요 시 정차 완료`:["서울반포: 승차 24명 예정","대전: 승차 12명 · 하차 14명 예정","부산센텀: 하차 후 운행 종료"][s.stopIndex];
- $("boardBtn").disabled=!atStop()||(!s.leftDoor&&!s.rightDoor);$("departBtn").disabled=!atStop()||s.finished;$("fuelBtn").disabled=!atStop()||s.h2>=32.999;$("chargeBtn").disabled=!atStop()||s.battery>=46.999;
- $("clutchBtn").classList.toggle("active",s.clutch);$("sigL").classList.toggle("active",s.signal==="left");$("sigR").classList.toggle("active",s.signal==="right");$("hazard").classList.toggle("active",s.hazard);
- $("landMode").classList.toggle("active",s.terrain==="land");$("waterMode").classList.toggle("active",s.terrain==="water");$("terrainState").textContent=s.terrain==="land"?"육상 · 경부고속도로[cite: 1]":"수상 · 아라뱃길 시천나루 ECDIS 모드";
- $("cargoState").textContent=s.cargo.every(v=>!v)?"모든 짐칸 닫힘":s.cargo.map((v,i)=>v?`짐칸 ${i+1} 열림`:null).filter(Boolean).join(" · ");s.cargo.forEach((v,i)=>$("cargoBox"+(i+1)).classList.toggle("open",v));
- $("openFreqText").textContent=$("openFreq").value;$("closeFreqText").textContent=$("closeFreq").value;
- document.querySelectorAll(".cruise").forEach(b=>b.classList.toggle("active",Number(b.dataset.speed)===s.cruise));document.querySelectorAll("#gearButtons button").forEach(b=>b.classList.toggle("active",b.textContent===gear()));
- drawRoad();drawMirror("mirrorL");drawMirror("mirrorR");drawMap()
+function drawMirror(id){const c=$(id),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.fillStyle=s.terrain==="water"?"#a2d2db":"#172b38";x.fillRect(0,0,w,h)}
+function drawMap(){const c=$("map"),x=c.getContext("2d"),w=c.width,h=c.height;x.fillStyle="#101923";x.fillRect(0,0,w,h);const a=40,z=w-40,y=55;x.strokeStyle="#4c5b69";x.lineWidth=18;x.beginPath();x.moveTo(a,y);x.lineTo(z,y);x.stroke();const p=a+(z-a)*s.distance/416.2;x.fillStyle="#fff";x.beginPath();x.arc(p,y,9,0,Math.PI*2);x.fill()}
+
+function render(){
+ const isWater = s.terrain==="water";
+ $("speed").textContent=Math.round(s.speed);
+ $("distance").textContent=s.distance.toFixed(isWater ? 2 : 1);
+ $("speedUnit").textContent = isWater ? "노트 (kn)" : "km/h";
+ $("speedUnitSmall").textContent = isWater ? "kn" : "km/h";
+ $("distUnitSmall").textContent = isWater ? "해리(NM)" : "km";
+
+ $("passengers").textContent=s.passengers;$("gearDisplay").textContent=gear();
+ $("steerDisplay").textContent = isWater ? (s.steer < 0 ? `좌회전 ${Math.abs(Math.round(s.steer))}°` : s.steer > 0 ? `우회전 ${Math.round(s.steer)}°` : `중앙 0°`) : `${Math.round(s.steer)}°`;
+ $("steerBar").style.width=Math.abs(s.steer)/60*100+"%";
+ $("steerLabel").textContent = isWater ? "타각 (좌회전/우회전)" : "핸들";
+ $("left").textContent = isWater ? "◀ 좌회전 (좌현)" : "◀ 좌측 변경";
+ $("right").textContent = isWater ? "우회전 (우현) ▶" : "우측 변경 ▶";
+
+ $("landMode").classList.toggle("active",!isWater);
+ $("waterMode").classList.toggle("active",isWater);
+ $("terrainState").textContent=isWater?"수상 · 아라뱃길 시천나루 ECDIS 모드":"육상 · 경부고속도로[cite: 1]";
+
+ drawRoad();drawMirror("mirrorL");drawMirror("mirrorR");drawMap();
 }
-function bindHold(id,key){const el=$(id);el.addEventListener("pointerdown",e=>{e.preventDefault();pressed.add(key);if(el.setPointerCapture)el.setPointerCapture(e.pointerId)});const release=()=>pressed.delete(key);el.addEventListener("pointerup",release);el.addEventListener("pointercancel",release);el.addEventListener("lostpointercapture",release);el.addEventListener("contextmenu",e=>e.preventDefault())}
+
+// 캔버스 마우스 휠 확대/축소 이벤트
+$("road").addEventListener("wheel", e => {
+ e.preventDefault();
+ if(e.deltaY < 0) {
+  zoomLevel = Math.min(3.0, zoomLevel + 0.1); // 최대 3배 확대
+ } else {
+  zoomLevel = Math.max(0.5, zoomLevel - 0.1); // 최소 0.5배 축소
+ }
+ notify(`해도 줌 배율: ${zoomLevel.toFixed(1)}x`);
+ render();
+}, {passive: false});
+
+$("zoomIn").onclick = () => { zoomLevel = Math.min(3.0, zoomLevel + 0.2); notify(`줌 배율: ${zoomLevel.toFixed(1)}x`); render(); };
+$("zoomOut").onclick = () => { zoomLevel = Math.max(0.5, zoomLevel - 0.2); notify(`줌 배율: ${zoomLevel.toFixed(1)}x`); render(); };
+$("zoomReset").onclick = () => { zoomLevel = 1.0; notify(`줌 초기화 (1.0x)`); render(); };
+
+function bindHold(id,key){const el=$(id);el.addEventListener("pointerdown",e=>{e.preventDefault();pressed.add(key)});const release=()=>pressed.delete(key);el.addEventListener("pointerup",release);el.addEventListener("pointercancel",release)}
 bindHold("accelerate","ArrowUp");bindHold("brake","ArrowDown");bindHold("left","ArrowLeft");bindHold("right","ArrowRight");
-$("modeBtn").onclick=toggleMode;
-$("pauseBtn").onclick=()=>{s.paused=!s.paused;$("pauseBtn").textContent=s.paused?"운행 재개":"일시정지";notify(s.paused?"일시정지":"운행 재개");render()};
-$("resetBtn").onclick=()=>{clearTimeout(s.doorTimer);pressed.clear();s=freshState();steerCooldown=0;$("pauseBtn").textContent="일시정지";$("log").innerHTML="";notify("초기화 완료. 수동변속 1단 · 정원 27석.");render()};
-$("clutchBtn").onclick=()=>setClutch(!s.clutch);$("sigL").onclick=()=>setSignal("left");$("sigR").onclick=()=>setSignal("right");
-$("hazard").onclick=()=>{s.hazard=!s.hazard;s.signal="off";render()};$("horn").onclick=()=>{beep(220,.7);notify("경적 작동")};$("center").onclick=()=>{s.steer=0;render()};
-$("openL").onclick=()=>setDoor("left",true);$("closeL").onclick=()=>setDoor("left",false);$("openR").onclick=()=>setDoor("right",true);$("closeR").onclick=()=>setDoor("right",false);
-$("testOpen").onclick=()=>doorBeep("open");$("testClose").onclick=()=>doorBeep("close");$("openFreq").oninput=render;$("closeFreq").oninput=render;
-for(let i=1;i<=3;i++){
- $("cargo"+i+"Open").onclick=()=>{if(s.speed>.1){notify("정차 후 짐칸을 조작하세요.");return}s.cargo[i-1]=true;s.cruise=null;notify("하부 짐칸 "+i+" 열림");render()};
- $("cargo"+i+"Close").onclick=()=>{if(s.speed>.1){notify("주행 중에는 짐칸을 조작할 수 없습니다.");return}s.cargo[i-1]=false;notify("하부 짐칸 "+i+" 닫힘");render()}
-}
-$("landMode").onclick=()=>{s.terrain="land";notify("육상 주행 모드 · 경부고속도로[cite: 1]");render()};
-$("waterMode").onclick=()=>{s.terrain="water";notify("수상 주행 모드 전환 · 경인아라뱃길 시천나루 ECDIS 해도 항해 시작");render()};
-$("boardBtn").onclick=serviceStop;$("departBtn").onclick=depart;$("fuelBtn").onclick=refuel;$("chargeBtn").onclick=recharge;
-$("cruiseOff").onclick=()=>setCruise(null);
-$("requestRest").onclick=()=>{const next=REST_STOPS.find(r=>r.km>s.distance+.1);if(!next){notify("앞으로 남은 지정 휴게소가 없습니다.");return}s.restRequest=true;s.nextRestIndex=REST_STOPS.indexOf(next);notify(`${next.name} 정차 요청 접수 · 필요 시 정차`);render()};
-document.querySelectorAll(".cruise").forEach(b=>b.onclick=()=>setCruise(Number(b.dataset.speed)));
-$("ac").onchange=e=>{s.ac=e.target.checked;if(s.ac){s.heater=false;$("heater").checked=false}render()};
-$("heater").onchange=e=>{s.heater=e.target.checked;if(s.heater){s.ac=false;$("ac").checked=false}render()};
-$("fan").oninput=e=>{s.fan=Number(e.target.value);render()};$("clearLog").onclick=()=>{s.log=[];$("log").innerHTML=""};
+
+$("landMode").onclick=()=>{s.terrain="land";s.distance=0;notify("육상 주행 모드 전환 · 경부고속도로[cite: 1]");render()};
+$("waterMode").onclick=()=>{s.terrain="water";s.distance=0;notify("수상 주행 모드 전환 · 경인아라뱃길 시천나루 ECDIS (1노트 = 1해리/h)");render()};
+$("pauseBtn").onclick=()=>{s.paused=!s.paused;render()};
+$("resetBtn").onclick=()=>{s=freshState();zoomLevel=1.0;render()};
+
 ["1","2","3","4","5","N","R1","R2","R3"].forEach(g=>{const b=document.createElement("button");b.textContent=g;b.onclick=()=>shiftGear(g);$("gearButtons").appendChild(b)});
-function keyDown(e){
- if(e.target&&["INPUT","TEXTAREA","SELECT"].includes(e.target.tagName))return;
- if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].includes(e.code))e.preventDefault();
- if(e.repeat)return;pressed.add(e.code);
- if(e.code==="ShiftLeft"||e.code==="ShiftRight")setClutch(true);
- if(e.code==="KeyA")setSignal("left");if(e.code==="KeyF")setSignal("right");
- if(e.code==="KeyB"){beep(220,.7);notify("경적 작동")}
- if(e.code==="KeyO"){if(pressed.has("KeyW"))setDoor("left",true);if(pressed.has("KeyE"))setDoor("right",true)}
- if(e.code==="KeyP"){if(pressed.has("KeyW"))setDoor("left",false);if(pressed.has("KeyE"))setDoor("right",false)}
- if(GEAR_MAP[e.code])shiftGear(GEAR_MAP[e.code])
-}
-function keyUp(e){pressed.delete(e.code);if((e.code==="ShiftLeft"||e.code==="ShiftRight")&&!pressed.has("ShiftLeft")&&!pressed.has("ShiftRight"))setFCEVClutch(false)}
-function setFCEVClutch(v){if(s.mode==="manual")s.clutch=v;render()}
-window.addEventListener("keydown",keyDown);window.addEventListener("keyup",keyUp);
-window.addEventListener("blur",()=>{pressed.clear();s.steer=0;steerCooldown=0;if(s.mode==="manual")s.clutch=false});
-document.addEventListener("visibilitychange",()=>{if(document.hidden){pressed.clear();steerCooldown=0}});
+
+window.addEventListener("keydown",e=>{if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].includes(e.code))e.preventDefault();pressed.add(e.code)});
+window.addEventListener("keyup",e=>pressed.delete(e.code));
+
 let last=performance.now();
 function frame(now){const dt=Math.min((now-last)/1000,.05);last=now;update(dt);requestAnimationFrame(frame)}
-log("준비 완료. 경부고속도로 노선 · 수동변속 기본 · 27석.");
-log("출입문은 주행 여부와 관계없이 언제든 열고 닫을 수 있습니다.");
+log("준비 완료. 수륙양용버스 시뮬레이터 실행 중[cite: 1].");
 render();requestAnimationFrame(frame);
 </script>
 </body>
