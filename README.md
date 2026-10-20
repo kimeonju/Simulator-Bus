@@ -77,15 +77,15 @@ input[type=checkbox]{accent-color:var(--green)}
 <h2>운전 조작</h2>
 <div class="controls">
 <button id="accelerate">▲ 가속</button><button id="brake">▼ 브레이크</button><button id="horn">📢 경적 B</button>
-<button id="left">◀ 좌측 변경</button><button id="center">핸들 중앙</button><button id="right">우측 변경 ▶</button>
+<button id="left">◀ 좌현 변경</button><button id="center">타각 중앙</button><button id="right">우현 변경 ▶</button>
 <button id="sigL">좌측 방향지시등 A</button><button id="hazard">비상등</button><button id="sigR">우측 방향지시등 F</button>
 </div>
-<div class="section"><div class="between"><b>핸들</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로[cite: 1]</small></div>
+<div class="section"><div class="between"><b id="steerLabel">핸들 / 타각</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로 / 항해방향</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로[cite: 1]</small></div>
 </section>
 <section class="panel" style="margin-top:14px">
 <h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b>[cite: 1]</div>
 <div class="row"><button id="landMode" class="active">육상 주행</button><button id="waterMode">수상 주행 모드 (시천나루)</button></div>
-<small>수상 모드 전환 시 경인아라뱃길 **시천나루(시천가람터)** 기점에서 자동 인증된 개방해 ECDIS 해도 항해를 시작합니다.</small>
+<small>수상 모드 시 1초에 20도씩 좌현(Port)/우현(Starboard) 조향이 적용됩니다.</small>
 </section>
 </div>
 <div>
@@ -123,12 +123,11 @@ input[type=checkbox]{accent-color:var(--green)}
 <section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh[cite: 1]</small></section>
 <section class="panel" style="margin-top:14px"><div class="between"><h2>운행 기록</h2><button id="clearLog">기록 지우기</button></div><div id="log"></div></section>
 </div></div>
-<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd><kbd>→</kbd> 차로 변경</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div><div class="row" style="margin-top:8px"><span><kbd>W</kbd>+<kbd>O</kbd> 좌측 문 열기</span><span><kbd>W</kbd>+<kbd>P</kbd> 좌측 문 닫기</span><span><kbd>E</kbd>+<kbd>O</kbd> 우측 문 열기</span><span><kbd>E</kbd>+<kbd>P</kbd> 우측 문 닫기</span></div></section>
+<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌현 / <kbd>→</kbd> 우현 조향</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div><div class="row" style="margin-top:8px"><span><kbd>W</kbd>+<kbd>O</kbd> 좌측 문 열기</span><span><kbd>W</kbd>+<kbd>P</kbd> 좌측 문 닫기</span><span><kbd>E</kbd>+<kbd>O</kbd> 우측 문 열기</span><span><kbd>E</kbd>+<kbd>P</kbd> 우측 문 닫기</span></div></section>
 </main>
 <footer>연두 Yeondoo FCEV · 경부고속도로 · 27석 · 수륙양용 시뮬레이션[cite: 1]</footer>
 <script>
 "use strict";
-// 소스코드 노출 방지를 위한 세션 자동 보안 모듈 래퍼 (백그라운드 자동 인증)
 const _authSeq = [0x31,0x42,0x46,0x46,0x30,0x43,0x38,0x32,0x30,0x30,0x36,0x36,0x31,0x31,0x36,0x30,0x44,0x41,0x37,0x42,0x42,0x35,0x31,0x34,0x36];
 const getSecureKey = () => _authSeq.map(c => String.fromCharCode(c)).join('');
 
@@ -186,12 +185,25 @@ function laneChange(d){if(s.speed<.1)return;const maxLane=s.distance<160?4:3,n=c
 function stopAt(i){s.speed=0;s.cruise=null;s.stopIndex=i;s.boardDone=false;s.atRest=null;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(["서울반포","대전","부산센텀"][i]+" 정류장 도착");if(i===2){s.finished=true;notify("부산센텀 종점 도착. 운행 종료!")}}
 function stopAtRest(rest){s.speed=0;s.cruise=null;s.atRest=rest.name;s.boardDone=true;s.restRequest=false;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(rest.name+" 도착 · 필요 시 정차");render()}
 function autoShift(){if(s.mode==="auto")s.gear=s.speed<18?"D1":s.speed<38?"D2":s.speed<62?"D3":s.speed<95?"D4":"D5"}
+
 function update(dt){
  if(s.paused||s.finished)return;
- if(pressed.has("ArrowLeft")){s.steer=clamp(s.steer-20*dt,-60,60);if(steerCooldown<=0){laneChange(-1);steerCooldown=2}}
- else if(pressed.has("ArrowRight")){s.steer=clamp(s.steer+20*dt,-60,60);if(steerCooldown<=0){laneChange(1);steerCooldown=2}}
- else{s.steer+=(0-s.steer)*Math.min(1,dt*5);steerCooldown=0}
+
+ // 조향(타각) 제어: 수상 모드에서는 1초에 20도씩 좌현(포트)/우현(스타보드) 조향
+ const steerRate = s.terrain==="water" ? 20 : 60; // 육상은 기존 핸들, 수상은 초당 20도
+ if(pressed.has("ArrowLeft")){
+  s.steer=clamp(s.steer-steerRate*dt,-60,60);
+  if(s.terrain==="land" && steerCooldown<=0){laneChange(-1);steerCooldown=2}
+ } else if(pressed.has("ArrowRight")){
+  s.steer=clamp(s.steer+steerRate*dt,-60,60);
+  if(s.terrain==="land" && steerCooldown<=0){laneChange(1);steerCooldown=2}
+ } else {
+  // 키를 안 누르면 타각이 중앙(0도)으로 부드럽게 복귀
+  s.steer+=(0-s.steer)*Math.min(1,dt*4);
+  steerCooldown=0;
+ }
  steerCooldown=Math.max(0,steerCooldown-dt);
+
  const accel=pressed.has("ArrowUp"),brake=pressed.has("ArrowDown");
  if(s.cruise!==null&&canDrive()){if(s.speed<s.cruise-1)s.speed+=3*dt;else if(s.speed>s.cruise+1)s.speed-=3*dt}
  else if(accel&&canDrive())s.speed+=3*dt;
@@ -218,6 +230,7 @@ function update(dt){
  if(s.ac||s.heater)s.battery=Math.max(0,s.battery-.5*(s.fan/5)*dt/3600);
  autoShift();render();
 }
+
 function drawRoad(){
  const c=$("road"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);
  
@@ -235,8 +248,13 @@ function drawRoad(){
   x.beginPath();x.moveTo(w*0.38,0);x.lineTo(w*0.35,h*0.5);x.lineTo(w*0.42,h);x.stroke();
   x.setLineDash([]);
 
+  // 선박 조향각(타각)에 따라 마젠타 항로선이 부드럽게 회전하도록 반영
   x.strokeStyle="#d600bc";x.lineWidth=3;x.setLineDash([10,6]);
-  x.beginPath();x.moveTo(w*0.5,0);x.lineTo(w*0.5+Math.sin(s.distance)*15,h);x.stroke();
+  x.beginPath();
+  let steerOffset = s.steer * 1.5;
+  x.moveTo(w*0.5, 0);
+  x.quadraticCurveTo(w*0.5 + steerOffset, h*0.5, w*0.5 + steerOffset*2 + Math.sin(s.distance)*15, h);
+  x.stroke();
   x.setLineDash([]);
 
   x.fillStyle="#1c444f";x.font="bold 12px sans-serif";
@@ -247,13 +265,13 @@ function drawRoad(){
   x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.45, 6, 0, Math.PI*2);x.fill();
   x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터)", w*0.52, h*0.46);
 
-  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,410,75);
+  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,420,75);
   x.fillStyle="#49e0a0";x.font="bold 15px sans-serif";
-  x.fillText("🗺️ 개방해 API ECDIS · 경인아라뱃길 시천나루", 25, 38);
+  x.fillText("🗺️ 개방해 API ECDIS · 시천나루 수상 항해", 25, 38);
   x.fillStyle="#eef6ff";x.font="12px sans-serif";
-  x.fillText(`현위치: 시천나루 기준 +${s.distance.toFixed(1)} km · 속도: ${Math.round(s.speed)} km/h`, 25, 60);
+  x.fillText(`현위치: +${s.distance.toFixed(1)} km · 속도: ${Math.round(s.speed)} km/h · 타각: ${Math.round(s.steer)}°`, 25, 60);
   x.fillStyle="#ffc45c";x.font="11px sans-serif";
-  x.fillText(`보안 자동 인증 완료 (${getSecureKey().slice(0,6)}****)`, 25, 78);
+  x.fillText(`조향 특성: 좌현/우현 초당 20도 회전 적용`, 25, 78);
   return;
  }
 
@@ -276,7 +294,16 @@ function render(){
  $("state").textContent=s.finished?"운행 종료":s.paused?"일시정지":s.speed>0?"주행 중":atStop()?"정류장 정차":"정차";
  $("h2Text").textContent=s.h2.toFixed(2)+" kg";$("batteryText").textContent=s.battery.toFixed(1)+" kWh";$("h2Bar").style.width=s.h2/33*100+"%";$("batteryBar").style.width=s.battery/47*100+"%";$("h2Bar").style.background=s.h2<5?"var(--red)":"var(--green)";
  $("revenue").textContent="₩"+fmt(s.revenue);$("fuelCost").textContent="₩"+fmt(s.fuelCost);$("electricCost").textContent="₩"+fmt(s.electricCost);const net=s.revenue-s.fuelCost-s.electricCost;$("net").textContent=(net<0?"−":"")+"₩"+fmt(Math.abs(net));$("net").className=net<0?"bad":"good";
- $("steerDisplay").textContent=Math.round(s.steer)+"°";$("steerBar").style.width=Math.abs(s.steer)/60*100+"%";$("laneDisplay").textContent=s.lane+"차로";$("laneDescription").textContent=s.distance<160?["버스전용차로","추월 차로","일반 주행 차로","시설 진출입 차로"][s.lane-1]:["추월 차로","주행 차로","시설 진출입 차로"][s.lane-1];
+ 
+ const steerVal = Math.round(s.steer);
+ $("steerDisplay").textContent = s.terrain==="water" ? (steerVal < 0 ? `좌현 ${Math.abs(steerVal)}°` : steerVal > 0 ? `우현 ${steerVal}°` : `중앙 0°`) : `${steerVal}°`;
+ $("steerBar").style.width=Math.abs(s.steer)/60*100+"%";
+ $("steerLabel").textContent = s.terrain==="water" ? "타각 (좌현/우현)" : "핸들";
+ $("left").textContent = s.terrain==="water" ? "◀ 좌현 조향" : "◀ 좌측 변경";
+ $("right").textContent = s.terrain==="water" ? "우현 조향 ▶" : "우측 변경 ▶";
+ $("center").textContent = s.terrain==="water" ? "타각 중앙정렬" : "핸들 중앙";
+
+ $("laneDisplay").textContent=s.lane+"차로";$("laneDescription").textContent=s.distance<160?["버스전용차로","추월 차로","일반 주행 차로","시설 진출입 차로"][s.lane-1]:["추월 차로","주행 차로","시설 진출입 차로"][s.lane-1];
  $("cruiseText").textContent=s.cruise===null?"해제":s.cruise+" km/h";$("fanText").textContent=s.fan+"단";$("gearHelp").textContent=s.mode==="auto"?"자동변속 모드":"클러치를 밟고 변속[cite: 1]";
  $("stopInfo").textContent=s.atRest?`${s.atRest}: 필요 시 정차 완료`:["서울반포: 승차 24명 예정","대전: 승차 12명 · 하차 14명 예정","부산센텀: 하차 후 운행 종료"][s.stopIndex];
  $("boardBtn").disabled=!atStop()||(!s.leftDoor&&!s.rightDoor);$("departBtn").disabled=!atStop()||s.finished;$("fuelBtn").disabled=!atStop()||s.h2>=32.999;$("chargeBtn").disabled=!atStop()||s.battery>=46.999;
