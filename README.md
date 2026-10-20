@@ -68,34 +68,34 @@ input[type=checkbox]{accent-color:var(--green)}
 <div><small>좌측 사이드미러</small><canvas id="mirrorL" width="400" height="90"></canvas></div>
 <div><small>우측 사이드미러</small><canvas id="mirrorR" width="400" height="90"></canvas></div>
 </div>
-<div class="section"><div class="between"><h2>경부고속도로 노선도</h2><small>파란색: 버스전용차로 구간[cite: 1]</small></div>
+<div class="section"><div class="between"><h2>경부고속도로 노선도</h2><small>파란색: 버스전용차로 구간</small></div>
 <canvas id="map" width="960" height="155"></canvas>
-<small>서울반포 → 판교 → 판교휴게소 → 죽전 → 동탄 → 평택지제 → 천안호두휴게소 → 천안아산 → 오송 → 신탄진 → 대전 → 옥천 → 영동 → 김천 → 구미 → 왜관 → 대구 → 동대구 → 경산 → 영천 → 경주 → 북울산 → 울산시내 → 부산센텀[cite: 1]</small>
+<small>서울반포 → 판교 → 판교휴게소 → 죽전 → 동탄 → 평택지제 → 천안호두휴게소 → 천안아산 → 오송 → 신탄진 → 대전 → 옥천 → 영동 → 김천 → 구미 → 왜관 → 대구 → 동대구 → 경산 → 영천 → 경주 → 북울산 → 울산시내 → 부산센텀</small>
 </div>
 </section>
 <section class="panel" style="margin-top:14px">
 <h2>운전 조작</h2>
 <div class="controls">
 <button id="accelerate">▲ 가속</button><button id="brake">▼ 브레이크</button><button id="horn">📢 경적 B</button>
-<button id="left">◀ 좌현 변경</button><button id="center">타각 중앙</button><button id="right">우현 변경 ▶</button>
+<button id="left">◀ 좌회전 (좌현)</button><button id="center">타각 중앙정렬</button><button id="right">우회전 (우현) ▶</button>
 <button id="sigL">좌측 방향지시등 A</button><button id="hazard">비상등</button><button id="sigR">우측 방향지시등 F</button>
 </div>
-<div class="section"><div class="between"><b id="steerLabel">핸들 / 타각</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로 / 항해방향</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로[cite: 1]</small></div>
+<div class="section"><div class="between"><b id="steerLabel">핸들 / 타각</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로 / 항해방향</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로</small></div>
 </section>
 <section class="panel" style="margin-top:14px">
-<h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b>[cite: 1]</div>
+<h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b></div>
 <div class="row"><button id="landMode" class="active">육상 주행</button><button id="waterMode">수상 주행 모드 (시천나루)</button></div>
-<small>수상 모드 시 1초에 20도씩 좌현(Port)/우현(Starboard) 조향이 적용됩니다.</small>
+<small>수상 모드 시 운전석 전방 기준 왼쪽(←)은 좌회전(좌현), 오른쪽(→)은 우회전(우현)으로 초당 20도씩 조향됩니다.</small>
 </section>
 </div>
 <div>
 <section class="panel">
 <h2>운전 계기판</h2>
 <div class="status">운행 상태: <b id="state">정차</b></div>
-<div class="status">문 상태: <b id="doorState">모든 문 닫힘</b>[cite: 1]</div>
-<div class="status">클러치: <b id="clutchState">해제</b> · 방향지시등: <b id="signalState">꺼짐</b>[cite: 1]</div>
+<div class="status">문 상태: <b id="doorState">모든 문 닫힘</b></div>
+<div class="status">클러치: <b id="clutchState">해제</b> · 방향지시등: <b id="signalState">꺼짐</b></div>
 <div class="status">수소: <b id="h2Text">33.00 kg</b><div class="bar"><div id="h2Bar" class="fill"></div></div>배터리: <b id="batteryText">47.0 kWh</b><div class="bar"><div id="batteryBar" class="fill blue"></div></div></div>
-<div class="section"><h2>변속기 · 수동 기본</h2><div class="gears" id="gearButtons"></div><div class="row" style="margin-top:8px"><button id="clutchBtn">클러치 Shift</button><span id="gearHelp" class="muted">수동변속 모드</span></div><small>변속하려면 클러치를 밟으세요[cite: 1].</small></div>
+<div class="section"><h2>변속기 · 수동 기본</h2><div class="gears" id="gearButtons"></div><div class="row" style="margin-top:8px"><button id="clutchBtn">클러치 Shift</button><span id="gearHelp" class="muted">수동변속 모드</span></div><small>변속하려면 클러치를 밟으세요.</small></div>
 <div class="section">
 <h2>출입문 · 부저 설정</h2>
 <div class="row"><button id="openL">좌측 문 열기 (W+O)</button><button id="closeL">좌측 문 닫기 (W+P)</button></div>
@@ -105,27 +105,27 @@ input[type=checkbox]{accent-color:var(--green)}
 <div><div class="between"><label for="closeFreq">닫힘 부저 주파수</label><b><span id="closeFreqText">580</span> Hz</b></div><input id="closeFreq" type="range" min="500" max="580" step="10" value="580"></div>
 </div>
 <div class="row"><button id="testOpen">열림 부저 시험</button><button id="testClose">닫힘 부저 시험</button></div>
-<small>주행 중에도 문을 열고 닫을 수 있습니다[cite: 1]. 문이 열린 상태에서도 주행이 가능합니다[cite: 1]. 부저 주파수는 슬라이더로 조절하세요[cite: 1].</small>
+<small>주행 중에도 문을 열고 닫을 수 있습니다. 문이 열린 상태에서도 주행이 가능합니다. 부저 주파수는 슬라이더로 조절하세요.</small>
 </div>
 <div class="section">
-<h2>하부 짐칸</h2><div class="status">짐칸 상태: <b id="cargoState">모든 짐칸 닫힘</b>[cite: 1]</div>
-<div class="cargo-layout"><small>버스 측면 하부 배치 개념도 · 앞쪽 → 뒤쪽[cite: 1]</small><div class="bus-bottom">
+<h2>하부 짐칸</h2><div class="status">짐칸 상태: <b id="cargoState">모든 짐칸 닫힘</b></div>
+<div class="cargo-layout"><small>버스 측면 하부 배치 개념도 · 앞쪽 → 뒤쪽</small><div class="bus-bottom">
 <div class="cargo small" id="cargoBox1"><b>짐칸 1</b><span class="tag">절반 크기</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo1Open">열기</button><button id="cargo1Close">닫기</button></div></div>
 <div class="cargo large" id="cargoBox2"><b>짐칸 2</b><span class="tag">일반</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo2Open">열기</button><button id="cargo2Close">닫기</button></div></div>
 <div class="cargo large" id="cargoBox3"><b>짐칸 3</b><span class="tag">일반</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo3Open">열기</button><button id="cargo3Close">닫기</button></div></div>
-</div><small>짐칸 1은 짐칸 2·3의 절반 크기입니다[cite: 1].</small></div>
-<small>짐칸은 정차 상태에서만 조작할 수 있습니다[cite: 1].</small>
+</div><small>짐칸 1은 짐칸 2·3의 절반 크기입니다.</small></div>
+<small>짐칸은 정차 상태에서만 조작할 수 있습니다.</small>
 </div>
-<div class="section"><h2>정류장 업무</h2><div class="row"><button id="boardBtn">승객 승하차</button><button id="departBtn">출발 준비</button></div><div class="row" style="margin-top:7px"><button id="fuelBtn">수소 충전</button><button id="chargeBtn">배터리 충전</button></div><div class="row" style="margin-top:7px"><button id="requestRest">다음 휴게소 정차 요청</button></div><small id="stopInfo">서울반포: 승차 24명 예정</small><small id="restInfo" style="display:block;margin-top:6px">필요 시 정차: 판교·천안호두·김천·경주 휴게소[cite: 1]</small></div>
+<div class="section"><h2>정류장 업무</h2><div class="row"><button id="boardBtn">승객 승하차</button><button id="departBtn">출발 준비</button></div><div class="row" style="margin-top:7px"><button id="fuelBtn">수소 충전</button><button id="chargeBtn">배터리 충전</button></div><div class="row" style="margin-top:7px"><button id="requestRest">다음 휴게소 정차 요청</button></div><small id="stopInfo">서울반포: 승차 24명 예정</small><small id="restInfo" style="display:block;margin-top:6px">필요 시 정차: 판교·천안호두·김천·경주 휴게소</small></div>
 </section>
 <section class="panel" style="margin-top:14px"><h2>냉난방</h2><div class="row"><label><input type="checkbox" id="ac"> 에어컨</label><label><input type="checkbox" id="heater"> 난방</label></div><div class="between"><label for="fan">송풍 단계</label><b id="fanText">3단</b></div><input id="fan" type="range" min="1" max="5" value="3"></section>
 <section class="panel" style="margin-top:14px"><h2>정속 주행</h2><div class="row"><button class="cruise" data-speed="85">85</button><button class="cruise" data-speed="90">90</button><button class="cruise" data-speed="95">95</button><button class="cruise" data-speed="100">100</button><button class="cruise" data-speed="105">105</button><button class="cruise" data-speed="110">110</button><button id="cruiseOff">해제</button></div><div class="status">설정 속도: <b id="cruiseText">해제</b></div></section>
-<section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh[cite: 1]</small></section>
+<section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh</small></section>
 <section class="panel" style="margin-top:14px"><div class="between"><h2>운행 기록</h2><button id="clearLog">기록 지우기</button></div><div id="log"></div></section>
 </div></div>
-<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌현 / <kbd>→</kbd> 우현 조향</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div><div class="row" style="margin-top:8px"><span><kbd>W</kbd>+<kbd>O</kbd> 좌측 문 열기</span><span><kbd>W</kbd>+<kbd>P</kbd> 좌측 문 닫기</span><span><kbd>E</kbd>+<kbd>O</kbd> 우측 문 열기</span><span><kbd>E</kbd>+<kbd>P</kbd> 우측 문 닫기</span></div></section>
+<section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌회전(좌현) / <kbd>→</kbd> 우회전(우현)</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div><div class="row" style="margin-top:8px"><span><kbd>5</kbd> 1단</span><span><kbd>6</kbd> 2단</span><span><kbd>7</kbd> 3단</span><span><kbd>8</kbd> 4단</span><span><kbd>9</kbd> 5단</span><span><kbd>4</kbd> N</span><span><kbd>3</kbd> R1</span><span><kbd>2</kbd> R2</span><span><kbd>1</kbd> R3</span></div><div class="row" style="margin-top:8px"><span><kbd>W</kbd>+<kbd>O</kbd> 좌측 문 열기</span><span><kbd>W</kbd>+<kbd>P</kbd> 좌측 문 닫기</span><span><kbd>E</kbd>+<kbd>O</kbd> 우측 문 열기</span><span><kbd>E</kbd>+<kbd>P</kbd> 우측 문 닫기</span></div></section>
 </main>
-<footer>연두 Yeondoo FCEV · 경부고속도로 · 27석 · 수륙양용 시뮬레이션[cite: 1]</footer>
+<footer>연두 Yeondoo FCEV · 경부고속도로 · 27석 · 수륙양용 시뮬레이션</footer>
 <script>
 "use strict";
 const _authSeq = [0x31,0x42,0x46,0x46,0x30,0x43,0x38,0x32,0x30,0x30,0x36,0x36,0x31,0x31,0x36,0x30,0x44,0x41,0x37,0x42,0x42,0x35,0x31,0x34,0x36];
@@ -147,9 +147,9 @@ function capSpeed(){const g=gear();if(g==="N")return 0;if(g.startsWith("R"))retu
 function canDrive(){return !s.paused&&!s.finished&&s.h2>.001&&!(s.mode==="manual"&&s.clutch)&&gear()!=="N"&&s.cargo.every(v=>!v)}
 function beep(freq,duration=.22){try{const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;if(!audioCtx)audioCtx=new AC();audioCtx.resume().then(()=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain(),now=audioCtx.currentTime;o.type="sine";o.frequency.setValueAtTime(Number(freq),now);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.22,now+.018);g.gain.setValueAtTime(.22,now+duration*.65);g.gain.exponentialRampToValueAtTime(.0001,now+duration);o.connect(g);g.connect(audioCtx.destination);o.start(now);o.stop(now+duration+.02);o.onended=()=>{o.disconnect();g.disconnect()}}).catch(()=>{})}catch(e){console.warn(e)}}
 function doorBeep(kind){beep(kind==="open"?$("openFreq").value:$("closeFreq").value,kind==="open"?.22:.32)}
-function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요[cite: 1].");return}const old=s.manualGear,oldDir=old==="N"?s.lastDirection:old.startsWith("R")?"reverse":"forward",newDir=g==="N"?null:g.startsWith("R")?"reverse":"forward";if(s.speed>.1&&newDir!==null&&newDir!==oldDir){notify("전진과 후진 사이의 변속은 완전히 정차한 뒤 가능합니다[cite: 1].");return}s.manualGear=g;if(newDir)s.lastDirection=newDir;if(g==="N"||g.startsWith("R"))s.cruise=null;notify(old+" → "+g+" 변속 완료");render()}
-function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다[cite: 1].");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;notify(s.mode==="auto"?"자동변속 모드":"수동변속 모드");render()}
-function setClutch(v){if(s.mode!=="manual"){if(v)notify("클러치는 수동 모드에서만 작동합니다[cite: 1].");return}s.clutch=v;render()}
+function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요.");return}const old=s.manualGear,oldDir=old==="N"?s.lastDirection:old.startsWith("R")?"reverse":"forward",newDir=g==="N"?null:g.startsWith("R")?"reverse":"forward";if(s.speed>.1&&newDir!==null&&newDir!==oldDir){notify("전진과 후진 사이의 변속은 완전히 정차한 뒤 가능합니다.");return}s.manualGear=g;if(newDir)s.lastDirection=newDir;if(g==="N"||g.startsWith("R"))s.cruise=null;notify(old+" → "+g+" 변속 완료");render()}
+function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다.");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;notify(s.mode==="auto"?"자동변속 모드":"수동변속 모드");render()}
+function setClutch(v){if(s.mode!=="manual"){if(v)notify("클러치는 수동 모드에서만 작동합니다.");return}s.clutch=v;render()}
 function setSignal(v){s.hazard=false;s.signal=s.signal===v?"off":v;render()}
 
 function setDoor(side,open){
@@ -176,11 +176,11 @@ function setDoor(side,open){
   render();
  },1000);
 }
-function serviceStop(){if(!atStop()||(!s.leftDoor&&!s.rightDoor)){notify("정류장에 정차하고 문을 열어 승객 승하차를 진행하세요[cite: 1].");return}if(s.atRest!==null){notify(s.atRest+" 정차 완료 · 휴식/점검 후 출발 준비를 누르세요[cite: 1].");s.boardDone=true;render();return}const d=[{b:24,a:0},{b:12,a:14},{b:0,a:27}][s.stopIndex],a=Math.min(s.passengers,d.a);s.passengers-=a;const b=Math.min(d.b,CAPACITY-s.passengers);s.passengers+=b;s.boardDone=true;notify(`${a}명 하차, ${b}명 승차. 현재 ${s.passengers}/${CAPACITY}명`);render()}
-function depart(){if(!atStop()){notify("정류장 또는 휴게소에 완전히 정차해야 합니다[cite: 1].");return}if(s.atRest!==null){notify(s.atRest+" 출발");s.atRest=null;s.restRequest=false;s.boardDone=true;render();return}if(s.stopIndex===2){s.finished=true;notify("부산센텀 종점. 운행 종료!");render();return}if(!s.boardDone){notify("승객 승하차를 먼저 진행하세요.");return}if(gear().startsWith("R")){notify("전진 기어를 선택하세요.");return}s.signal="left";notify("출발 준비 완료. ↑ 키로 가속하세요[cite: 1].");render()}
-function refuel(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요[cite: 1].");return}const n=33-s.h2;if(n<.001){notify("수소가 가득 찼습니다.");return}s.h2=33;s.fuelCost+=n*12000;notify(`수소 ${n.toFixed(2)} kg 충전 · ${fmt(n*12000)}원`);render()}
-function recharge(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요[cite: 1].");return}const n=47-s.battery;if(n<.001){notify("배터리가 가득 찼습니다.");return}s.battery=47;s.electricCost+=n*190;notify(`배터리 ${n.toFixed(1)} kWh 충전 · ${fmt(n*190)}원`);render()}
-function setCruise(v){if(v!==null&&(s.speed<1||!canDrive())){notify("주행 중에 정속 주행을 설정하세요[cite: 1].");return}s.cruise=v;notify(v===null?"정속 주행 해제":`정속 주행 ${v} km/h`);render()}
+function serviceStop(){if(!atStop()||(!s.leftDoor&&!s.rightDoor)){notify("정류장에 정차하고 문을 열어 승객 승하차를 진행하세요.");return}if(s.atRest!==null){notify(s.atRest+" 정차 완료 · 휴식/점검 후 출발 준비를 누르세요.");s.boardDone=true;render();return}const d=[{b:24,a:0},{b:12,a:14},{b:0,a:27}][s.stopIndex],a=Math.min(s.passengers,d.a);s.passengers-=a;const b=Math.min(d.b,CAPACITY-s.passengers);s.passengers+=b;s.boardDone=true;notify(`${a}명 하차, ${b}명 승차. 현재 ${s.passengers}/${CAPACITY}명`);render()}
+function depart(){if(!atStop()){notify("정류장 또는 휴게소에 완전히 정차해야 합니다.");return}if(s.atRest!==null){notify(s.atRest+" 출발");s.atRest=null;s.restRequest=false;s.boardDone=true;render();return}if(s.stopIndex===2){s.finished=true;notify("부산센텀 종점. 운행 종료!");render();return}if(!s.boardDone){notify("승객 승하차를 먼저 진행하세요.");return}if(gear().startsWith("R")){notify("전진 기어를 선택하세요.");return}s.signal="left";notify("출발 준비 완료. ↑ 키로 가속하세요.");render()}
+function refuel(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요.");return}const n=33-s.h2;if(n<.001){notify("수소가 가득 찼습니다.");return}s.h2=33;s.fuelCost+=n*12000;notify(`수소 ${n.toFixed(2)} kg 충전 · ${fmt(n*12000)}원`);render()}
+function recharge(){if(!atStop()){notify("정류장 정차 상태에서 충전하세요.");return}const n=47-s.battery;if(n<.001){notify("배터리가 가득 찼습니다.");return}s.battery=47;s.electricCost+=n*190;notify(`배터리 ${n.toFixed(1)} kWh 충전 · ${fmt(n*190)}원`);render()}
+function setCruise(v){if(v!==null&&(s.speed<1||!canDrive())){notify("주행 중에 정속 주행을 설정하세요.");return}s.cruise=v;notify(v===null?"정속 주행 해제":`정속 주행 ${v} km/h`);render()}
 function laneChange(d){if(s.speed<.1)return;const maxLane=s.distance<160?4:3,n=clamp(s.lane+d,1,maxLane);if(n===s.lane)return;s.lane=n;notify(n+"차로로 변경")}
 function stopAt(i){s.speed=0;s.cruise=null;s.stopIndex=i;s.boardDone=false;s.atRest=null;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(["서울반포","대전","부산센텀"][i]+" 정류장 도착");if(i===2){s.finished=true;notify("부산센텀 종점 도착. 운행 종료!")}}
 function stopAtRest(rest){s.speed=0;s.cruise=null;s.atRest=rest.name;s.boardDone=true;s.restRequest=false;if(s.mode==="auto")s.gear="D1";else s.manualGear="1";notify(rest.name+" 도착 · 필요 시 정차");render()}
@@ -189,20 +189,19 @@ function autoShift(){if(s.mode==="auto")s.gear=s.speed<18?"D1":s.speed<38?"D2":s
 function update(dt){
  if(s.paused||s.finished)return;
 
- // 조향(타각) 제어: 수상 모드에서는 1초에 20도씩 좌현(포트)/우현(스타보드) 조향
- const steerRate = s.terrain==="water" ? 20 : 60; // 육상은 기존 핸들, 수상은 초당 20도
+ // 조향(타각/좌·우현 회전) 제어: 수상 모드에서는 좌측키=좌회전(음수 타각), 우측키=우회전(양수 타각), 초당 20도
+ const steerRate = s.terrain==="water" ? 20 : 60; 
  if(pressed.has("ArrowLeft")){
-  s.steer=clamp(s.steer-steerRate*dt,-60,60);
+  s.steer=clamp(s.steer - steerRate*dt, -60, 60);
   if(s.terrain==="land" && steerCooldown<=0){laneChange(-1);steerCooldown=2}
  } else if(pressed.has("ArrowRight")){
-  s.steer=clamp(s.steer+steerRate*dt,-60,60);
+  s.steer=clamp(s.steer + steerRate*dt, -60, 60);
   if(s.terrain==="land" && steerCooldown<=0){laneChange(1);steerCooldown=2}
  } else {
-  // 키를 안 누르면 타각이 중앙(0도)으로 부드럽게 복귀
-  s.steer+=(0-s.steer)*Math.min(1,dt*4);
+  s.steer += (0 - s.steer) * Math.min(1, dt * 4);
   steerCooldown=0;
  }
- steerCooldown=Math.max(0,steerCooldown-dt);
+ steerCooldown=Math.max(0, steerCooldown-dt);
 
  const accel=pressed.has("ArrowUp"),brake=pressed.has("ArrowDown");
  if(s.cruise!==null&&canDrive()){if(s.speed<s.cruise-1)s.speed+=3*dt;else if(s.speed>s.cruise+1)s.speed-=3*dt}
@@ -235,43 +234,51 @@ function drawRoad(){
  const c=$("road"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);
  
  if(s.terrain==="water"){
+  // 국립해양조사원 개방해 ECDIS 기준 경인아라뱃길 시천나루 실제 지형 렌더링
   x.fillStyle="#c2e0e5";x.fillRect(0,0,w,h);
   
+  // 아라뱃길 수변 육지 (좌측 북측 수변공원 및 우측 검암역/시천공원 일대 지형)
   x.fillStyle="#e6d5a9";
-  x.beginPath();x.moveTo(0,0);x.lineTo(w*0.35,0);x.lineTo(w*0.3,h);x.lineTo(0,h);x.closePath();x.fill();
-  x.beginPath();x.moveTo(w*0.7,0);x.lineTo(w,0);x.lineTo(w,h);x.lineTo(w*0.75,h);x.closePath();x.fill();
+  x.beginPath();x.moveTo(0,0);x.lineTo(w*0.32,0);x.lineTo(w*0.28,h);x.lineTo(0,h);x.closePath();x.fill();
+  x.beginPath();x.moveTo(w*0.68,0);x.lineTo(w,0);x.lineTo(w,h);x.lineTo(w*0.72,h);x.closePath();x.fill();
 
-  x.strokeStyle="#6b7280";x.lineWidth=4;
-  x.beginPath();x.moveTo(w*0.25, h*0.45);x.lineTo(w*0.75, h*0.45);x.stroke();
+  // 경인아라뱃길 가로지르는 실제 '시천교' 교량 구조물
+  x.strokeStyle="#55606d";x.lineWidth=6;
+  x.beginPath();x.moveTo(w*0.2, h*0.42);x.lineTo(w*0.8, h*0.42);x.stroke();
+  x.fillStyle="#1f2937";x.font="11px sans-serif";x.fillText("시천교 (Choncheon Bridge)", w*0.22, h*0.39);
 
+  // 등심선 (수심 경계선)
   x.strokeStyle="#2a7585";x.lineWidth=1.5;x.setLineDash([6,4]);
-  x.beginPath();x.moveTo(w*0.38,0);x.lineTo(w*0.35,h*0.5);x.lineTo(w*0.42,h);x.stroke();
+  x.beginPath();x.moveTo(w*0.35,0);x.lineTo(w*0.32,h*0.5);x.lineTo(w*0.38,h);x.stroke();
   x.setLineDash([]);
 
-  // 선박 조향각(타각)에 따라 마젠타 항로선이 부드럽게 회전하도록 반영
+  // 운전석 전방 기준 좌/우 조향(좌회전/우회전)에 따라 꺾이는 마젠타 항로선
   x.strokeStyle="#d600bc";x.lineWidth=3;x.setLineDash([10,6]);
   x.beginPath();
-  let steerOffset = s.steer * 1.5;
+  let steerOffset = s.steer * 1.8;
   x.moveTo(w*0.5, 0);
-  x.quadraticCurveTo(w*0.5 + steerOffset, h*0.5, w*0.5 + steerOffset*2 + Math.sin(s.distance)*15, h);
+  x.quadraticCurveTo(w*0.5 + steerOffset, h*0.5, w*0.5 + steerOffset*1.5 + Math.sin(s.distance)*15, h);
   x.stroke();
   x.setLineDash([]);
 
+  // 표준 수심 표기 (미터 단위)
   x.fillStyle="#1c444f";x.font="bold 12px sans-serif";
-  x.fillText("6.3", w*0.44, h*0.25);
-  x.fillText("5.8", w*0.55, h*0.6);
-  x.fillText("6.1", w*0.48, h*0.8);
+  x.fillText("6.3m", w*0.43, h*0.22);
+  x.fillText("5.9m", w*0.56, h*0.65);
+  x.fillText("6.1m", w*0.47, h*0.82);
 
-  x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.45, 6, 0, Math.PI*2);x.fill();
-  x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터)", w*0.52, h*0.46);
+  // 시천나루 선착장 마크 (시천가람터)
+  x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.42, 6, 0, Math.PI*2);x.fill();
+  x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터 선착장)", w*0.52, h*0.43);
 
-  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,420,75);
+  // ECDIS 정보 상단 패널
+  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,440,75);
   x.fillStyle="#49e0a0";x.font="bold 15px sans-serif";
-  x.fillText("🗺️ 개방해 API ECDIS · 시천나루 수상 항해", 25, 38);
+  x.fillText("🗺️ 개방해 API ECDIS · 경인아라뱃길 시천나루", 25, 38);
   x.fillStyle="#eef6ff";x.font="12px sans-serif";
-  x.fillText(`현위치: +${s.distance.toFixed(1)} km · 속도: ${Math.round(s.speed)} km/h · 타각: ${Math.round(s.steer)}°`, 25, 60);
+  x.fillText(`위치: +${s.distance.toFixed(1)} km · 속도: ${Math.round(s.speed)} km/h · 타각: ${Math.round(s.steer)}°`, 25, 60);
   x.fillStyle="#ffc45c";x.font="11px sans-serif";
-  x.fillText(`조향 특성: 좌현/우현 초당 20도 회전 적용`, 25, 78);
+  x.fillText(`조향: 전방 기준 ← 좌회전(좌현) / → 우회전(우현) 초당 20도`, 25, 78);
   return;
  }
 
@@ -296,15 +303,15 @@ function render(){
  $("revenue").textContent="₩"+fmt(s.revenue);$("fuelCost").textContent="₩"+fmt(s.fuelCost);$("electricCost").textContent="₩"+fmt(s.electricCost);const net=s.revenue-s.fuelCost-s.electricCost;$("net").textContent=(net<0?"−":"")+"₩"+fmt(Math.abs(net));$("net").className=net<0?"bad":"good";
  
  const steerVal = Math.round(s.steer);
- $("steerDisplay").textContent = s.terrain==="water" ? (steerVal < 0 ? `좌현 ${Math.abs(steerVal)}°` : steerVal > 0 ? `우현 ${steerVal}°` : `중앙 0°`) : `${steerVal}°`;
+ $("steerDisplay").textContent = s.terrain==="water" ? (steerVal < 0 ? `좌회전/좌현 ${Math.abs(steerVal)}°` : steerVal > 0 ? `우회전/우현 ${steerVal}°` : `중앙 0°`) : `${steerVal}°`;
  $("steerBar").style.width=Math.abs(s.steer)/60*100+"%";
- $("steerLabel").textContent = s.terrain==="water" ? "타각 (좌현/우현)" : "핸들";
- $("left").textContent = s.terrain==="water" ? "◀ 좌현 조향" : "◀ 좌측 변경";
- $("right").textContent = s.terrain==="water" ? "우현 조향 ▶" : "우측 변경 ▶";
+ $("steerLabel").textContent = s.terrain==="water" ? "타각 (좌회전/우회전)" : "핸들";
+ $("left").textContent = s.terrain==="water" ? "◀ 좌회전 (좌현)" : "◀ 좌측 변경";
+ $("right").textContent = s.terrain==="water" ? "우회전 (우현) ▶" : "우측 변경 ▶";
  $("center").textContent = s.terrain==="water" ? "타각 중앙정렬" : "핸들 중앙";
 
  $("laneDisplay").textContent=s.lane+"차로";$("laneDescription").textContent=s.distance<160?["버스전용차로","추월 차로","일반 주행 차로","시설 진출입 차로"][s.lane-1]:["추월 차로","주행 차로","시설 진출입 차로"][s.lane-1];
- $("cruiseText").textContent=s.cruise===null?"해제":s.cruise+" km/h";$("fanText").textContent=s.fan+"단";$("gearHelp").textContent=s.mode==="auto"?"자동변속 모드":"클러치를 밟고 변속[cite: 1]";
+ $("cruiseText").textContent=s.cruise===null?"해제":s.cruise+" km/h";$("fanText").textContent=s.fan+"단";$("gearHelp").textContent=s.mode==="auto"?"자동변속 모드":"클러치를 밟고 변속";
  $("stopInfo").textContent=s.atRest?`${s.atRest}: 필요 시 정차 완료`:["서울반포: 승차 24명 예정","대전: 승차 12명 · 하차 14명 예정","부산센텀: 하차 후 운행 종료"][s.stopIndex];
  $("boardBtn").disabled=!atStop()||(!s.leftDoor&&!s.rightDoor);$("departBtn").disabled=!atStop()||s.finished;$("fuelBtn").disabled=!atStop()||s.h2>=32.999;$("chargeBtn").disabled=!atStop()||s.battery>=46.999;
  $("clutchBtn").classList.toggle("active",s.clutch);$("sigL").classList.toggle("active",s.signal==="left");$("sigR").classList.toggle("active",s.signal==="right");$("hazard").classList.toggle("active",s.hazard);
@@ -318,20 +325,20 @@ function bindHold(id,key){const el=$(id);el.addEventListener("pointerdown",e=>{e
 bindHold("accelerate","ArrowUp");bindHold("brake","ArrowDown");bindHold("left","ArrowLeft");bindHold("right","ArrowRight");
 $("modeBtn").onclick=toggleMode;
 $("pauseBtn").onclick=()=>{s.paused=!s.paused;$("pauseBtn").textContent=s.paused?"운행 재개":"일시정지";notify(s.paused?"일시정지":"운행 재개");render()};
-$("resetBtn").onclick=()=>{clearTimeout(s.doorTimer);pressed.clear();s=freshState();steerCooldown=0;$("pauseBtn").textContent="일시정지";$("log").innerHTML="";notify("초기화 완료. 수동변속 1단 · 정원 27석[cite: 1].");render()};
+$("resetBtn").onclick=()=>{clearTimeout(s.doorTimer);pressed.clear();s=freshState();steerCooldown=0;$("pauseBtn").textContent="일시정지";$("log").innerHTML="";notify("초기화 완료. 수동변속 1단 · 정원 27석.");render()};
 $("clutchBtn").onclick=()=>setClutch(!s.clutch);$("sigL").onclick=()=>setSignal("left");$("sigR").onclick=()=>setSignal("right");
 $("hazard").onclick=()=>{s.hazard=!s.hazard;s.signal="off";render()};$("horn").onclick=()=>{beep(220,.7);notify("경적 작동")};$("center").onclick=()=>{s.steer=0;render()};
 $("openL").onclick=()=>setDoor("left",true);$("closeL").onclick=()=>setDoor("left",false);$("openR").onclick=()=>setDoor("right",true);$("closeR").onclick=()=>setDoor("right",false);
 $("testOpen").onclick=()=>doorBeep("open");$("testClose").onclick=()=>doorBeep("close");$("openFreq").oninput=render;$("closeFreq").oninput=render;
 for(let i=1;i<=3;i++){
- $("cargo"+i+"Open").onclick=()=>{if(s.speed>.1){notify("정차 후 짐칸을 조작하세요[cite: 1].");return}s.cargo[i-1]=true;s.cruise=null;notify("하부 짐칸 "+i+" 열림");render()};
- $("cargo"+i+"Close").onclick=()=>{if(s.speed>.1){notify("주행 중에는 짐칸을 조작할 수 없습니다[cite: 1].");return}s.cargo[i-1]=false;notify("하부 짐칸 "+i+" 닫힘");render()}
+ $("cargo"+i+"Open").onclick=()=>{if(s.speed>.1){notify("정차 후 짐칸을 조작하세요.");return}s.cargo[i-1]=true;s.cruise=null;notify("하부 짐칸 "+i+" 열림");render()};
+ $("cargo"+i+"Close").onclick=()=>{if(s.speed>.1){notify("주행 중에는 짐칸을 조작할 수 없습니다.");return}s.cargo[i-1]=false;notify("하부 짐칸 "+i+" 닫힘");render()}
 }
 $("landMode").onclick=()=>{s.terrain="land";notify("육상 주행 모드 · 경부고속도로[cite: 1]");render()};
 $("waterMode").onclick=()=>{s.terrain="water";notify("수상 주행 모드 전환 · 경인아라뱃길 시천나루 ECDIS 해도 항해 시작");render()};
 $("boardBtn").onclick=serviceStop;$("departBtn").onclick=depart;$("fuelBtn").onclick=refuel;$("chargeBtn").onclick=recharge;
 $("cruiseOff").onclick=()=>setCruise(null);
-$("requestRest").onclick=()=>{const next=REST_STOPS.find(r=>r.km>s.distance+.1);if(!next){notify("앞으로 남은 지정 휴게소가 없습니다.");return}s.restRequest=true;s.nextRestIndex=REST_STOPS.indexOf(next);notify(`${next.name} 정차 요청 접수 · 필요 시 정차[cite: 1]`);render()};
+$("requestRest").onclick=()=>{const next=REST_STOPS.find(r=>r.km>s.distance+.1);if(!next){notify("앞으로 남은 지정 휴게소가 없습니다.");return}s.restRequest=true;s.nextRestIndex=REST_STOPS.indexOf(next);notify(`${next.name} 정차 요청 접수 · 필요 시 정차`);render()};
 document.querySelectorAll(".cruise").forEach(b=>b.onclick=()=>setCruise(Number(b.dataset.speed)));
 $("ac").onchange=e=>{s.ac=e.target.checked;if(s.ac){s.heater=false;$("heater").checked=false}render()};
 $("heater").onchange=e=>{s.heater=e.target.checked;if(s.heater){s.ac=false;$("ac").checked=false}render()};
@@ -355,8 +362,8 @@ window.addEventListener("blur",()=>{pressed.clear();s.steer=0;steerCooldown=0;if
 document.addEventListener("visibilitychange",()=>{if(document.hidden){pressed.clear();steerCooldown=0}});
 let last=performance.now();
 function frame(now){const dt=Math.min((now-last)/1000,.05);last=now;update(dt);requestAnimationFrame(frame)}
-log("준비 완료. 경부고속도로 노선 · 수동변속 기본 · 27석[cite: 1].");
-log("출입문은 주행 여부와 관계없이 언제든 열고 닫을 수 있습니다[cite: 1].");
+log("준비 완료. 경부고속도로 노선 · 수동변속 기본 · 27석.");
+log("출입문은 주행 여부와 관계없이 언제든 열고 닫을 수 있습니다.");
 render();requestAnimationFrame(frame);
 </script>
 </body>
