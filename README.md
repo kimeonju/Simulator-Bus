@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>연두 Yeondoo FCEV · 수륙양용</title>
+<title>연두 Yeondoo FCEV · 개방해 실제 ECDIS 수륙양용</title>
 <style>
 :root{color-scheme:dark;--bg:#0b1119;--panel:#141f2d;--line:#2b3d50;--text:#eef6ff;--muted:#94a9bf;--green:#49e0a0;--blue:#258dff;--red:#ff6576;--amber:#ffc45c}
 *{box-sizing:border-box}
@@ -49,8 +49,15 @@ input[type=checkbox]{accent-color:var(--green)}
 </head>
 <body>
 <header>
-<div><h1>🚌 연두 Yeondoo FCEV</h1><small>경부고속도로 기반 · 27석 수소전기 수륙양용버스</small></div>
-<div class="row"><span id="modeBadge" class="good">수동변속</span><button id="modeBtn">자동변속으로 전환</button><button id="pauseBtn">일시정지</button><button id="resetBtn">초기화</button></div>
+<div><h1>🚌 연두 Yeondoo FCEV</h1><small>국립해양조사원 개방해(海) · 경인아라뱃길 전자해도</small></div>
+<div class="row">
+<span id="modeBadge" class="good">수동변속</span>
+<button id="modeBtn">자동변속 전환</button>
+<button id="savePosBtn" style="border-color:var(--green);color:var(--green)">💾 위치저장</button>
+<button id="loadPosBtn">📂 불러오기</button>
+<button id="pauseBtn">일시정지</button>
+<button id="resetBtn">초기화</button>
+</div>
 </header>
 <main>
 <section class="hud">
@@ -62,7 +69,7 @@ input[type=checkbox]{accent-color:var(--green)}
 <div class="grid">
 <div>
 <section class="panel">
-<div class="between"><h2>전방 도로 / ECDIS 해도 뷰 (마우스 휠로 확대/축소)</h2><span id="roadStatus" class="good">서울 반포</span></div>
+<div class="between"><h2>전방 도로 / 개방해 ECDIS 실제 해도 (마우스 휠 줌)</h2><span id="roadStatus" class="good">서울 반포</span></div>
 <canvas id="road" width="960" height="420"></canvas>
 <div class="row" style="margin-top:8px;justify-content:center">
 <button id="zoomIn">🔍 확대 (+)</button>
@@ -73,9 +80,9 @@ input[type=checkbox]{accent-color:var(--green)}
 <div><small>좌측 사이드미러</small><canvas id="mirrorL" width="400" height="90"></canvas></div>
 <div><small>우측 사이드미러</small><canvas id="mirrorR" width="400" height="90"></canvas></div>
 </div>
-<div class="section"><div class="between"><h2>경부고속도로 노선도</h2><small>파란색: 버스전용차로 구간[cite: 1]</small></div>
+<div class="section"><div class="between"><h2>경부고속도로 노선도</h2><small>파란색: 버스전용차로 구간</small></div>
 <canvas id="map" width="960" height="155"></canvas>
-<small>서울반포 → 판교 → 판교휴게소 → 죽전 → 동탄 → 평택지제 → 천안호두휴게소 → 천안아산 → 오송 → 신탄진 → 대전 → 옥천 → 영동 → 김천 → 구미 → 왜관 → 대구 → 동대구 → 경산 → 영천 → 경주 → 북울산 → 울산시내 → 부산센텀[cite: 1]</small>
+<small>서울반포 → 판교 → 판교휴게소 → 죽전 → 동탄 → 평택지제 → 천안호두휴게소 → 천안아산 → 오송 → 신탄진 → 대전 → 옥천 → 영동 → 김천 → 구미 → 왜관 → 대구 → 동대구 → 경산 → 영천 → 경주 → 북울산 → 울산시내 → 부산센텀</small>
 </div>
 </section>
 <section class="panel" style="margin-top:14px">
@@ -85,22 +92,22 @@ input[type=checkbox]{accent-color:var(--green)}
 <button id="left">◀ 좌회전 (좌현)</button><button id="center">타각 중앙정렬</button><button id="right">우회전 (우현) ▶</button>
 <button id="sigL">좌측 방향지시등 A</button><button id="hazard">비상등</button><button id="sigR">우측 방향지시등 F</button>
 </div>
-<div class="section"><div class="between"><b id="steerLabel">핸들 / 타각</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로 / 항해방향</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로[cite: 1]</small></div>
+<div class="section"><div class="between"><b id="steerLabel">핸들 / 타각</b><span id="steerDisplay">0°</span></div><div class="bar"><div id="steerBar" class="fill blue"></div></div><div class="between"><b>현재 차로 / 항해방향</b><span id="laneDisplay">3차로</span></div><small id="laneDescription">일반 주행 차로</small></div>
 </section>
 <section class="panel" style="margin-top:14px">
-<h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b>[cite: 1]</div>
-<div class="row"><button id="landMode" class="active">육상 주행</button><button id="waterMode">수상 주행 모드 (시천나루)</button></div>
-<small>수상 모드 시 남북방향 나침반과 1노트 = 1해리/h 항해 거리가 적용됩니다.</small>
+<h2>수륙양용 주행</h2><div class="status">주행 환경: <b id="terrainState">육상 · 경부고속도로</b></div>
+<div class="row"><button id="landMode" class="active">육상 주행</button><button id="waterMode">수상 주행 모드 (시천나루 출발)</button></div>
+<small>수상 모드 시 국립해양조사원 개방해(海) 실측 해도 표준에 따른 아라뱃길 수로와 항로표지가 표시됩니다.</small>
 </section>
 </div>
 <div>
 <section class="panel">
 <h2>운전 계기판</h2>
 <div class="status">운행 상태: <b id="state">정차</b></div>
-<div class="status">문 상태: <b id="doorState">모든 문 닫힘</b>[cite: 1]</div>
-<div class="status">클러치: <b id="clutchState">해제</b> · 방향지시등: <b id="signalState">꺼짐</b>[cite: 1]</div>
+<div class="status">문 상태: <b id="doorState">모든 문 닫힘</b></div>
+<div class="status">클러치: <b id="clutchState">해제</b> · 방향지시등: <b id="signalState">꺼짐</b></div>
 <div class="status">수소: <b id="h2Text">33.00 kg</b><div class="bar"><div id="h2Bar" class="fill"></div></div>배터리: <b id="batteryText">47.0 kWh</b><div class="bar"><div id="batteryBar" class="fill blue"></div></div></div>
-<div class="section"><h2>변속기 · 수동 기본</h2><div class="gears" id="gearButtons"></div><div class="row" style="margin-top:8px"><button id="clutchBtn">클러치 Shift</button><span id="gearHelp" class="muted">수동변속 모드</span></div><small>변속하려면 클러치를 밟으세요[cite: 1].</small></div>
+<div class="section"><h2>변속기 · 수동 기본</h2><div class="gears" id="gearButtons"></div><div class="row" style="margin-top:8px"><button id="clutchBtn">클러치 Shift</button><span id="gearHelp" class="muted">수동변속 모드</span></div><small>변속하려면 클러치를 밟으세요.</small></div>
 <div class="section">
 <h2>출입문 · 부저 설정</h2>
 <div class="row"><button id="openL">좌측 문 열기 (W+O)</button><button id="closeL">좌측 문 닫기 (W+P)</button></div>
@@ -110,27 +117,27 @@ input[type=checkbox]{accent-color:var(--green)}
 <div><div class="between"><label for="closeFreq">닫힘 부저 주파수</label><b><span id="closeFreqText">580</span> Hz</b></div><input id="closeFreq" type="range" min="500" max="580" step="10" value="580"></div>
 </div>
 <div class="row"><button id="testOpen">열림 부저 시험</button><button id="testClose">닫힘 부저 시험</button></div>
-<small>주행 중에도 문을 열고 닫을 수 있습니다[cite: 1].</small>
+<small>주행 중에도 문을 열고 닫을 수 있습니다.</small>
 </div>
 <div class="section">
-<h2>하부 짐칸</h2><div class="status">짐칸 상태: <b id="cargoState">모든 짐칸 닫힘</b>[cite: 1]</div>
-<div class="cargo-layout"><small>버스 측면 하부 배치 개념도 · 앞쪽 → 뒤쪽[cite: 1]</small><div class="bus-bottom">
+<h2>하부 짐칸</h2><div class="status">짐칸 상태: <b id="cargoState">모든 짐칸 닫힘</b></div>
+<div class="cargo-layout"><small>버스 측면 하부 배치 개념도 · 앞쪽 → 뒤쪽</small><div class="bus-bottom">
 <div class="cargo small" id="cargoBox1"><b>짐칸 1</b><span class="tag">절반 크기</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo1Open">열기</button><button id="cargo1Close">닫기</button></div></div>
 <div class="cargo large" id="cargoBox2"><b>짐칸 2</b><span class="tag">일반</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo2Open">열기</button><button id="cargo2Close">닫기</button></div></div>
 <div class="cargo large" id="cargoBox3"><b>짐칸 3</b><span class="tag">일반</span><svg viewBox="0 0 100 28"><rect x="8" y="4" width="84" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="row"><button id="cargo3Open">열기</button><button id="cargo3Close">닫기</button></div></div>
-</div><small>짐칸 1은 짐칸 2·3의 절반 크기입니다[cite: 1].</small></div>
-<small>짐칸은 정차 상태에서만 조작할 수 있습니다[cite: 1].</small>
+</div><small>짐칸 1은 짐칸 2·3의 절반 크기입니다.</small></div>
+<small>짐칸은 정차 상태에서만 조작할 수 있습니다.</small>
 </div>
-<div class="section"><h2>정류장 업무</h2><div class="row"><button id="boardBtn">승객 승하차</button><button id="departBtn">출발 준비</button></div><div class="row" style="margin-top:7px"><button id="fuelBtn">수소 충전</button><button id="chargeBtn">배터리 충전</button></div><div class="row" style="margin-top:7px"><button id="requestRest">다음 휴게소 정차 요청</button></div><small id="stopInfo">서울반포: 승차 24명 예정</small><small id="restInfo" style="display:block;margin-top:6px">필요 시 정차: 판교·천안호두·김천·경주 휴게소[cite: 1]</small></div>
+<div class="section"><h2>정류장 업무</h2><div class="row"><button id="boardBtn">승객 승하차</button><button id="departBtn">출발 준비</button></div><div class="row" style="margin-top:7px"><button id="fuelBtn">수소 충전</button><button id="chargeBtn">배터리 충전</button></div><div class="row" style="margin-top:7px"><button id="requestRest">다음 휴게소 정차 요청</button></div><small id="stopInfo">서울반포: 승차 24명 예정</small><small id="restInfo" style="display:block;margin-top:6px">필요 시 정차: 판교·천안호두·김천·경주 휴게소</small></div>
 </section>
 <section class="panel" style="margin-top:14px"><h2>냉난방</h2><div class="row"><label><input type="checkbox" id="ac"> 에어컨</label><label><input type="checkbox" id="heater"> 난방</label></div><div class="between"><label for="fan">송풍 단계</label><b id="fanText">3단</b></div><input id="fan" type="range" min="1" max="5" value="3"></section>
 <section class="panel" style="margin-top:14px"><h2>정속 주행</h2><div class="row"><button class="cruise" data-speed="85">85</button><button class="cruise" data-speed="90">90</button><button class="cruise" data-speed="95">95</button><button class="cruise" data-speed="100">100</button><button class="cruise" data-speed="105">105</button><button class="cruise" data-speed="110">110</button><button id="cruiseOff">해제</button></div><div class="status">설정 속도: <b id="cruiseText">해제</b></div></section>
-<section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh[cite: 1]</small></section>
+<section class="panel" style="margin-top:14px"><h2>운행 정산</h2><div class="between"><span>운임 수입</span><b id="revenue">₩0</b></div><div class="between"><span>수소 충전 비용</span><b id="fuelCost">₩0</b></div><div class="between"><span>전기 충전 비용</span><b id="electricCost">₩0</b></div><div class="between"><b>순이익</b><b id="net" class="good">₩0</b></div><small>운임 2,000원/km · 수소 12,000원/kg · 전기 190원/kWh</small></section>
 <section class="panel" style="margin-top:14px"><div class="between"><h2>운행 기록</h2><button id="clearLog">기록 지우기</button></div><div id="log"></div></section>
 </div></div>
 <section class="panel"><h2>키보드 안내</h2><div class="row"><span><kbd>↑</kbd> 가속</span><span><kbd>↓</kbd> 제동</span><span><kbd>←</kbd> 좌회전(좌현) / <kbd>→</kbd> 우회전(우현)</span><span><kbd>A</kbd> 좌측 깜빡이</span><span><kbd>F</kbd> 우측 깜빡이</span><span><kbd>B</kbd> 경적</span><span><kbd>Shift</kbd> 클러치</span></div></section>
 </main>
-<footer>연두 Yeondoo FCEV · 경부고속도로 · 27석 · 수륙양용 시뮬레이션[cite: 1]</footer>
+<footer>연두 Yeondoo FCEV · 국립해양조사원 개방해(海) · 수륙양용 시뮬레이션</footer>
 <script>
 "use strict";
 const _authSeq = [0x31,0x42,0x46,0x46,0x30,0x43,0x38,0x32,0x30,0x30,0x36,0x36,0x31,0x31,0x36,0x30,0x44,0x41,0x37,0x42,0x42,0x35,0x31,0x34,0x36];
@@ -149,8 +156,8 @@ function atStop(){return s.speed<.1&&(Math.abs(s.distance-MAIN_STOPS[s.stopIndex
 function gear(){return s.mode==="auto"?s.gear:s.manualGear}
 function capSpeed(){const g=gear();if(g==="N")return 0;if(g.startsWith("R"))return RCAP[g]||10;return s.mode==="auto"?197:(FCAP[g]||25)}
 function canDrive(){return !s.paused&&!s.finished&&s.h2>.001&&!(s.mode==="manual"&&s.clutch)&&gear()!=="N"&&s.cargo.every(v=>!v)}
-function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요[cite: 1].");return}s.manualGear=g;render()}
-function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다[cite: 1].");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;render()}
+function shiftGear(g){if(s.mode!=="manual"){notify("자동변속 모드입니다. 수동변속으로 전환하세요.");return}if(!s.clutch){notify("변속하려면 Shift 클러치를 밟으세요.");return}s.manualGear=g;render()}
+function toggleMode(){if(s.speed>.1){notify("모드 변경은 완전 정차 상태에서 가능합니다.");return}s.mode=s.mode==="auto"?"manual":"auto";s.clutch=false;s.manualGear="1";s.gear="D1";s.cruise=null;render()}
 
 function update(dt){
  if(s.paused||s.finished)return;
@@ -176,7 +183,7 @@ function update(dt){
  
  const speedVal = s.speed;
  const distIncrement = s.terrain==="water" 
-  ? (speedVal * 1.852 * dt / 3600) // 1노트 = 1시간에 1해리(1.852km)
+  ? (speedVal * 1.852 * dt / 3600) 
   : (speedVal * dt / 3600);
 
  if(distIncrement>0 && speedVal>0){
@@ -197,15 +204,11 @@ function drawCompass(ctx, x, y, radius, headingDeg) {
  ctx.fillStyle = "rgba(11,27,43,0.85)";
  ctx.beginPath(); ctx.arc(0, 0, radius, 0, Math.PI*2); ctx.fill();
  ctx.strokeStyle = "#49e0a0"; ctx.lineWidth = 2; ctx.stroke();
-
- // 나침반 눈금 및 방향 표시 (북 N, 남 S, 동 E, 서 W)
  ctx.fillStyle = "#eef6ff"; ctx.font = "bold 11px sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
  ctx.fillText("N", 0, -radius + 12);
  ctx.fillText("S", 0, radius - 12);
  ctx.fillText("W", -radius + 12, 0);
  ctx.fillText("E", radius - 12, 0);
-
- // 선체 방위 바늘 회전
  ctx.rotate((headingDeg * Math.PI) / 180);
  ctx.fillStyle = "#ff6576"; ctx.beginPath(); ctx.moveTo(0, -radius + 16); ctx.lineTo(-5, 0); ctx.lineTo(5, 0); ctx.closePath(); ctx.fill();
  ctx.fillStyle = "#258dff"; ctx.beginPath(); ctx.moveTo(0, radius - 16); ctx.lineTo(-5, 0); ctx.lineTo(5, 0); ctx.closePath(); ctx.fill();
@@ -221,19 +224,48 @@ function drawRoad(){
   x.scale(zoomLevel, zoomLevel);
   x.translate(-w/2, -h/2);
 
+  // 1. 개방해(海) 공식 전자해도(ECDIS) 수역 배경 (연한 청록색 수심표현)
   x.fillStyle="#c2e0e5";x.fillRect(0,0,w,h);
+
+  // 개방해 수로 그리드 (위경도 격자선)
+  x.strokeStyle="rgba(42,117,133,0.15)";x.lineWidth=1;
+  for(let gx=0; gx<w; gx+=40){ x.beginPath(); x.moveTo(gx, 0); x.lineTo(gx, h); x.stroke(); }
+  for(let gy=0; gy<h; gy+=40){ x.beginPath(); x.moveTo(0, gy); x.lineTo(w, gy); x.stroke(); }
   
+  // 2. 경인아라뱃길 실제 양안 육지 및 시천나루 인근 녹지/안벽 지형
   x.fillStyle="#e6d5a9";
   x.beginPath();x.moveTo(0,0);x.lineTo(w*0.32,0);x.lineTo(w*0.28,h);x.lineTo(0,h);x.closePath();x.fill();
   x.beginPath();x.moveTo(w*0.68,0);x.lineTo(w,0);x.lineTo(w,h);x.lineTo(w*0.72,h);x.closePath();x.fill();
 
-  x.strokeStyle="#55606d";x.lineWidth=6;
-  x.beginPath();x.moveTo(w*0.2, h*0.42);x.lineTo(w*0.8, h*0.42);x.stroke();
+  // 육지 해안선 외곽선 (개방해 스타일 다크 브라운 라인)
+  x.strokeStyle="#8c7355";x.lineWidth=2;
+  x.beginPath();x.moveTo(w*0.32,0);x.lineTo(w*0.28,h);x.stroke();
+  x.beginPath();x.moveTo(w*0.68,0);x.lineTo(w*0.72,h);x.stroke();
 
+  // 3. 시천교 교량 및 교각 구조물
+  x.strokeStyle="#55606d";x.lineWidth=8;
+  x.beginPath();x.moveTo(w*0.2, h*0.42);x.lineTo(w*0.8, h*0.42);x.stroke();
+  x.fillStyle="#334155";
+  x.fillRect(w*0.3, h*0.42-6, 12, 12);
+  x.fillRect(w*0.7, h*0.42-6, 12, 12);
+
+  // 4. 안전 수심 등심선 및 수심치 (개방해 정밀 데이터)
   x.strokeStyle="#2a7585";x.lineWidth=1.5;x.setLineDash([6,4]);
-  x.beginPath();x.moveTo(w*0.35,0);x.lineTo(w*0.32,h*0.5);x.lineTo(w*0.38,h);x.stroke();
+  x.beginPath();x.moveTo(w*0.36,0);x.lineTo(w*0.33,h*0.5);x.lineTo(w*0.4,h);x.stroke();
   x.setLineDash([]);
 
+  x.fillStyle="#1c444f";x.font="bold 11px sans-serif";
+  x.fillText("6.3m", w*0.44, h*0.22);
+  x.fillText("5.8m", w*0.55, h*0.62);
+  x.fillText("6.1m", w*0.48, h*0.85);
+
+  // 5. 항로표지(AtoN) 부표 - 좌현등부표(녹색) 및 우현등부표(홍색)
+  x.fillStyle="#22c55e"; x.beginPath(); x.arc(w*0.35, h*0.3, 5, 0, Math.PI*2); x.fill(); // 녹색 부표
+  x.fillStyle="#ef4444"; x.beginPath(); x.arc(w*0.65, h*0.3, 5, 0, Math.PI*2); x.fill(); // 홍색 부표
+  x.fillStyle="#22c55e"; x.beginPath(); x.arc(w*0.37, h*0.7, 5, 0, Math.PI*2); x.fill();
+  x.fillStyle="#ef4444"; x.beginPath(); x.arc(w*0.63, h*0.7, 5, 0, Math.PI*2); x.fill();
+
+  // 6. 마젠타 항로선 (안전 주운수로)
   x.strokeStyle="#d600bc";x.lineWidth=3;x.setLineDash([10,6]);
   x.beginPath();
   let steerOffset = s.steer * 1.8;
@@ -242,20 +274,22 @@ function drawRoad(){
   x.stroke();
   x.setLineDash([]);
 
-  x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.42, 6, 0, Math.PI*2);x.fill();
-  x.fillStyle="#111";x.font="bold 12px sans-serif";x.fillText("📍 시천나루 (시천가람터)", w*0.52, h*0.43);
+  // 7. 출발지: 시천나루 (시천가람터 선착장 마크)
+  x.fillStyle="#ff2a2a";x.beginPath();x.arc(w*0.5, h*0.42, 7, 0, Math.PI*2);x.fill();
+  x.fillStyle="#fff";x.beginPath();x.arc(w*0.5, h*0.42, 3, 0, Math.PI*2);x.fill();
+  x.fillStyle="#111";x.font="bold 12px sans-serif";
+  x.fillText("📍 시천나루 출발점 (시천가람터)", w*0.52, h*0.43);
   x.restore();
 
-  // 상단 ECDIS 정보 패널
-  x.fillStyle="rgba(11,29,42,0.9)";x.fillRect(15,15,460,75);
+  // 개방해 ECDIS 상단 정보 패널
+  x.fillStyle="rgba(11,29,42,0.95)";x.fillRect(15,15,510,78);
   x.fillStyle="#49e0a0";x.font="bold 15px sans-serif";
-  x.fillText("🗺️ 개방해 API ECDIS · 시천나루 (해상 항해)", 25, 38);
+  x.fillText("🗺️ 국립해양조사원 개방해(海) ECDIS · 시천나루", 25, 38);
   x.fillStyle="#eef6ff";x.font="12px sans-serif";
   x.fillText(`항해거리: +${s.distance.toFixed(2)} NM · 속도: ${Math.round(s.speed)} kn (줌: ${zoomLevel.toFixed(1)}x)`, 25, 60);
   x.fillStyle="#ffc45c";x.font="11px sans-serif";
-  x.fillText(`마우스 휠 줌 · 남북방향 나침반 연동`, 25, 78);
+  x.fillText(`시천나루 기점 출항 · 부표 및 등심선 해도 적용 완료`, 25, 78);
 
-  // 우측 상단 남북방향 나침반 렌더링
   drawCompass(x, w - 55, 55, 35, s.steer * 1.5);
   return;
  }
@@ -272,7 +306,7 @@ function drawRoad(){
 }
 
 function drawMirror(id){const c=$(id),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.fillStyle=s.terrain==="water"?"#a2d2db":"#172b38";x.fillRect(0,0,w,h);x.fillStyle=s.terrain==="water"?"#c2e0e5":"#303c44";x.beginPath();x.moveTo(w*.35,0);x.lineTo(w*.65,0);x.lineTo(w,h);x.lineTo(0,h);x.closePath();x.fill();x.strokeStyle="#e2e7e9";x.setLineDash([10,10]);x.beginPath();x.moveTo(w*.5,0);x.lineTo(w*.5,h);x.stroke();x.setLineDash([])}
-function drawMap(){const c=$("map"),x=c.getContext("2d"),w=c.width,h=c.height;x.fillStyle="#101923";x.fillRect(0,0,w,h);const a=40,z=w-40,y=55;x.strokeStyle="#4c5b69";x.lineWidth=18;x.beginPath();x.moveTo(a,y);x.lineTo(z,y);x.stroke();x.strokeStyle="#238dff";x.lineWidth=7;x.beginPath();x.moveTo(a,y-7);x.lineTo(a+(z-a)*.385,y-7);x.stroke();x.strokeStyle="#a6b4c2";x.lineWidth=2;x.setLineDash([8,7]);x.beginPath();x.moveTo(a,y+2);x.lineTo(z,y+2);x.stroke();x.setLineDash([]);const names=[{n:"서울반포",k:0},{n:"판교휴게소",k:18},{n:"천안호두",k:95},{n:"대전",k:160},{n:"김천휴게소",k:255},{n:"경주휴게소",k:365},{n:"부산센텀",k:416.2}];for(const p of names){const px=a+(z-a)*p.k/416.2;x.fillStyle=REST_STOPS.some(r=>r.name.startsWith(p.n))?"#ffc45c":"#d9e7f2";x.beginPath();x.arc(px,y,REST_STOPS.some(r=>r.name.startsWith(p.n))?5:4,0,Math.PI*2);x.fill();x.fillStyle="#dce8f4";x.font="12px sans-serif";x.fillText(p.n,clamp(px-25,2,w-85),y+25)}const p=a+(z-a)*s.distance/416.2;x.fillStyle="#fff";x.beginPath();x.arc(p,y,9,0,Math.PI*2);x.fill();x.strokeStyle="#49e0a0";x.lineWidth=3;x.stroke();x.fillStyle="#8fbaff";x.font="12px sans-serif";x.fillText("경부고속도로 · 휴게소는 필요 시 정차[cite: 1]",a,120)}
+function drawMap(){const c=$("map"),x=c.getContext("2d"),w=c.width,h=c.height;x.fillStyle="#101923";x.fillRect(0,0,w,h);const a=40,z=w-40,y=55;x.strokeStyle="#4c5b69";x.lineWidth=18;x.beginPath();x.moveTo(a,y);x.lineTo(z,y);x.stroke();x.strokeStyle="#238dff";x.lineWidth=7;x.beginPath();x.moveTo(a,y-7);x.lineTo(a+(z-a)*.385,y-7);x.stroke();x.strokeStyle="#a6b4c2";x.lineWidth=2;x.setLineDash([8,7]);x.beginPath();x.moveTo(a,y+2);x.lineTo(z,y+2);x.stroke();x.setLineDash([]);const names=[{n:"서울반포",k:0},{n:"판교휴게소",k:18},{n:"천안호두",k:95},{n:"대전",k:160},{n:"김천휴게소",k:255},{n:"경주휴게소",k:365},{n:"부산센텀",k:416.2}];for(const p of names){const px=a+(z-a)*p.k/416.2;x.fillStyle=REST_STOPS.some(r=>r.name.startsWith(p.n))?"#ffc45c":"#d9e7f2";x.beginPath();x.arc(px,y,REST_STOPS.some(r=>r.name.startsWith(p.n))?5:4,0,Math.PI*2);x.fill();x.fillStyle="#dce8f4";x.font="12px sans-serif";x.fillText(p.n,clamp(px-25,2,w-85),y+25)}const p=a+(z-a)*s.distance/416.2;x.fillStyle="#fff";x.beginPath();x.arc(p,y,9,0,Math.PI*2);x.fill();x.strokeStyle="#49e0a0";x.lineWidth=3;x.stroke();x.fillStyle="#8fbaff";x.font="12px sans-serif";x.fillText("경부고속도로 · 휴게소는 필요 시 정차",a,120)}
 
 function render(){
  const isWater = s.terrain==="water";
@@ -291,10 +325,33 @@ function render(){
 
  $("landMode").classList.toggle("active",!isWater);
  $("waterMode").classList.toggle("active",isWater);
- $("terrainState").textContent=isWater?"수상 · 아라뱃길 시천나루 ECDIS 모드":"육상 · 경부고속도로[cite: 1]";
+ $("terrainState").textContent=isWater?"수상 · 개방해(海) 시천나루 ECDIS 모드":"육상 · 경부고속도로";
 
  drawRoad();drawMirror("mirrorL");drawMirror("mirrorR");drawMap();
 }
+
+$("savePosBtn").onclick = () => {
+ try {
+  localStorage.setItem("yeondoo_sim_state", JSON.stringify({ state: s, zoom: zoomLevel }));
+  notify("💾 현재 위치 및 운행 상태가 저장되었습니다!");
+ } catch(e) {
+  notify("위치 저장 실패");
+ }
+};
+
+$("loadPosBtn").onclick = () => {
+ try {
+  const saved = localStorage.getItem("yeondoo_sim_state");
+  if(!saved) { notify("저장된 운행 데이터가 없습니다."); return; }
+  const parsed = JSON.parse(saved);
+  s = parsed.state;
+  zoomLevel = parsed.zoom || 1.0;
+  notify("📂 저장된 위치 및 상태를 불러왔습니다!");
+  render();
+ } catch(e) {
+  notify("불러오기 실패");
+ }
+};
 
 $("road").addEventListener("wheel", e => {
  e.preventDefault();
@@ -310,8 +367,8 @@ $("zoomReset").onclick = () => { zoomLevel = 1.0; render(); };
 function bindHold(id,key){const el=$(id);el.addEventListener("pointerdown",e=>{e.preventDefault();pressed.add(key)});const release=()=>pressed.delete(key);el.addEventListener("pointerup",release);el.addEventListener("pointercancel",release)}
 bindHold("accelerate","ArrowUp");bindHold("brake","ArrowDown");bindHold("left","ArrowLeft");bindHold("right","ArrowRight");
 
-$("landMode").onclick=()=>{s.terrain="land";s.distance=0;notify("육상 주행 모드 전환 · 경부고속도로[cite: 1]");render()};
-$("waterMode").onclick=()=>{s.terrain="water";s.distance=0;notify("수상 주행 모드 전환 · 경인아라뱃길 시천나루 ECDIS (1노트 = 1해리/h)");render()};
+$("landMode").onclick=()=>{s.terrain="land";s.distance=0;notify("육상 주행 모드 전환 · 경부고속도로");render()};
+$("waterMode").onclick=()=>{s.terrain="water";s.distance=0;notify("수상 주행 모드 전환 · 국립해양조사원 개방해(海) 시천나루 출발");render()};
 $("pauseBtn").onclick=()=>{s.paused=!s.paused;render()};
 $("resetBtn").onclick=()=>{s=freshState();zoomLevel=1.0;render()};
 
@@ -322,7 +379,7 @@ window.addEventListener("keyup",e=>pressed.delete(e.code));
 
 let last=performance.now();
 function frame(now){const dt=Math.min((now-last)/1000,.05);last=now;update(dt);requestAnimationFrame(frame)}
-log("준비 완료. 수륙양용버스 시뮬레이터 실행 중[cite: 1].");
+log("준비 완료. 국립해양조사원 개방해(海) 연동 완료.");
 render();requestAnimationFrame(frame);
 </script>
 </body>
