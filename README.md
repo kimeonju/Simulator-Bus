@@ -46,7 +46,6 @@ input[type=checkbox]{accent-color:var(--green)}
 <header>
 <div><h1>🚌 연두 Yeondoo FCEV</h1><small>수륙양용 버스 시뮬레이터 · 국립해양조사원 Web-ECDIS 연동</small></div>
 <div class="row">
-<button id="audioInitBtn" style="border-color:var(--amber);color:var(--amber)">🔊 오디오 활성화</button>
 <button id="savePosBtn" style="border-color:var(--green);color:var(--green)">💾 위치 저장</button>
 <button id="loadPosBtn">📂 불러오기</button>
 <button id="modeBtn">자동변속 전환</button>
@@ -125,7 +124,6 @@ input[type=checkbox]{accent-color:var(--green)}
 <script>
 "use strict";
 const $=id=>document.getElementById(id),clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),pressed=new Set();
-const GEAR_MAP={Digit5:"1",Numpad5:"1",Digit6:"2",Numpad6:"2",Digit7:"3",Numpad7:"3",Digit8:"4",Numpad8:"4",Digit9:"5",Numpad9:"5",Digit4:"N",Numpad4:"N",Digit3:"R1",Numpad3:"R1",Digit2:"R2",Numpad2:"R2",Digit1:"R3",Numpad1:"R3"};
 let s,audioCtx=null,zoomLevel=1.0,showChart=true,showDepth=true,showRoute=true;
 
 function freshState(){
@@ -133,15 +131,24 @@ function freshState(){
 }
 s=freshState();
 
-function initAudio(){
- if(!audioCtx){ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); }
- if(audioCtx.state==="suspended"){ audioCtx.resume(); }
+// --- 🔊 오디오 자동 활성화 처리 (Auto Unmute) ---
+function autoInitAudio(){
+ if(!audioCtx){
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+ }
+ if(audioCtx.state==="suspended"){
+  audioCtx.resume();
+ }
 }
-$("audioInitBtn").onclick=()=>{ initAudio(); notify("🔊 오디오 시스템 활성화됨"); };
+
+// 사용자 첫 화면 클릭/터치/키보드 누름 시 오디오 자동 켜짐
+["click","touchstart","keydown","pointerdown"].forEach(evt=>{
+ window.addEventListener(evt, autoInitAudio, {once:false, passive:true});
+});
 
 function playSound(freq, type="sine", duration=0.25){
  try{
-  if(!audioCtx)initAudio();
+  autoInitAudio();
   const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
   osc.type=type; osc.frequency.value=freq;
   gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
@@ -154,12 +161,12 @@ function playSound(freq, type="sine", duration=0.25){
 function log(m){s.log.unshift("["+new Date().toLocaleTimeString("ko-KR",{hour12:false})+"] "+m);s.log=s.log.slice(0,50);$("log").innerHTML=s.log.map(v=>"<div>"+v+"</div>").join("")}
 function notify(m){$("roadStatus").textContent=m;log(m)}
 
-// --- 💾 위치 저장 및 📂 불러오기 기능 추가 ---
+// --- 💾 위치 저장 및 📂 불러오기 ---
 $("savePosBtn").onclick=()=>{
  try {
   const savePayload = { state: s, zoom: zoomLevel };
   localStorage.setItem("yeondoo_saved_position", JSON.stringify(savePayload));
-  notify(`💾 현재 위치 저장 완료 (${s.terrain === "water" ? s.distance.toFixed(2) + " NM" : s.distance.toFixed(1) + " km"})`);
+  notify(`💾 위치 저장 완료 (${s.terrain === "water" ? s.distance.toFixed(2) + " NM" : s.distance.toFixed(1) + " km"})`);
  } catch(e) {
   notify("❌ 위치 저장 실패");
  }
@@ -178,13 +185,13 @@ $("loadPosBtn").onclick=()=>{
    } else {
     $("landMode").click();
    }
-   notify("📂 저장된 위치 및 데이터를 성공적으로 불러왔습니다.");
+   notify("📂 저장된 위치를 불러왔습니다.");
    render();
   } else {
-   notify("⚠️ 저장된 위치 데이터가 없습니다.");
+   notify("⚠️ 저장된 위치가 없습니다.");
   }
  } catch(e) {
-  notify("❌ 위치 불러오기 오류 발생");
+  notify("❌ 불러오기 실패");
  }
 };
 
@@ -342,14 +349,14 @@ $("resetBtn").onclick=()=>{s=freshState();zoomLevel=1.0;notify("초기화 완료
 
 window.addEventListener("keydown",e=>{
  if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight","Space"].includes(e.code))e.preventDefault();
- pressed.add(e.code); initAudio();
+ pressed.add(e.code);
 });
 window.addEventListener("keyup",e=>pressed.delete(e.code));
 window.addEventListener("blur",()=>{pressed.clear();s.steer=0;render();});
 
 let last=performance.now();
 function frame(now){const dt=Math.min((now-last)/1000,.05);last=now;update(dt);requestAnimationFrame(frame)}
-log("연두 FCEV 수륙양용 시뮬레이터 로드 완료.");
+log("연두 FCEV 수륙양용 시뮬레이터 로드 완료 (오디오 자동 연동).");
 render();requestAnimationFrame(frame);
 </script>
 </body>
