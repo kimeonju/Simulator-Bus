@@ -131,17 +131,10 @@ function freshState(){
 }
 s=freshState();
 
-// --- 🔊 오디오 자동 활성화 처리 (Auto Unmute) ---
 function autoInitAudio(){
- if(!audioCtx){
-  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
- }
- if(audioCtx.state==="suspended"){
-  audioCtx.resume();
- }
+ if(!audioCtx){ audioCtx=new(window.AudioContext||window.webkitAudioContext)(); }
+ if(audioCtx.state==="suspended"){ audioCtx.resume(); }
 }
-
-// 사용자 첫 화면 클릭/터치/키보드 누름 시 오디오 자동 켜짐
 ["click","touchstart","keydown","pointerdown"].forEach(evt=>{
  window.addEventListener(evt, autoInitAudio, {once:false, passive:true});
 });
@@ -161,7 +154,6 @@ function playSound(freq, type="sine", duration=0.25){
 function log(m){s.log.unshift("["+new Date().toLocaleTimeString("ko-KR",{hour12:false})+"] "+m);s.log=s.log.slice(0,50);$("log").innerHTML=s.log.map(v=>"<div>"+v+"</div>").join("")}
 function notify(m){$("roadStatus").textContent=m;log(m)}
 
-// --- 💾 위치 저장 및 📂 불러오기 ---
 $("savePosBtn").onclick=()=>{
  try {
   const savePayload = { state: s, zoom: zoomLevel };
@@ -179,12 +171,7 @@ $("loadPosBtn").onclick=()=>{
    const parsed = JSON.parse(savedData);
    s = parsed.state;
    zoomLevel = parsed.zoom || 1.0;
-   
-   if(s.terrain === "water"){
-    $("waterMode").click();
-   } else {
-    $("landMode").click();
-   }
+   if(s.terrain === "water") $("waterMode").click(); else $("landMode").click();
    notify("📂 저장된 위치를 불러왔습니다.");
    render();
   } else {
@@ -259,16 +246,55 @@ function drawRoad(){
  const c=$("road"),x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);
 
  if(s.terrain==="land"){
+  // --- 육상 모드: 선명하게 개선된 경부고속도로 도로 및 차선 렌더링 ---
   const g=x.createLinearGradient(0,0,0,h*0.55); g.addColorStop(0,"#17344b"); g.addColorStop(1,"#8bb3c3");
   x.fillStyle=g; x.fillRect(0,0,w,h);
-  x.fillStyle="#263d36"; x.fillRect(0,h*0.4,w,h*0.6);
-  const hy=h*0.4, ny=h*0.96, cx=w/2, rn=w*0.94, rf=w*0.22;
-  x.fillStyle="#343b43"; x.beginPath(); x.moveTo(cx-rf/2,hy); x.lineTo(cx+rf/2,hy); x.lineTo(cx+rn/2,ny); x.lineTo(cx-rn/2,ny); x.closePath(); x.fill();
-  x.strokeStyle="#f7d86d"; x.lineWidth=4; x.beginPath(); x.moveTo(cx-rn/2,ny); x.lineTo(cx-rf/2,hy); x.moveTo(cx+rn/2,ny); x.lineTo(cx+rf/2,hy); x.stroke();
+  x.fillStyle="#1b2a22"; x.fillRect(0,h*0.4,w,h*0.6);
+
+  const hy=h*0.4, ny=h*0.98, cx=w/2, rn=w*0.96, rf=w*0.18;
+  const numLanes = s.distance < 160 ? 4 : 3;
+
+  // 도로 아스팔트 배경
+  x.fillStyle="#2b333d"; x.beginPath(); x.moveTo(cx-rf/2,hy); x.lineTo(cx+rf/2,hy); x.lineTo(cx+rn/2,ny); x.lineTo(cx-rn/2,ny); x.closePath(); x.fill();
+
+  // 1차로 버스전용차로 (파란색 식별 구간)
+  if(numLanes === 4){
+   x.fillStyle="rgba(8, 118, 223, 0.35)"; 
+   x.beginPath(); 
+   x.moveTo(cx-rf/2, hy); 
+   x.lineTo(cx-rf/2 + rf/4, hy); 
+   x.lineTo(cx-rn/2 + rn/4, ny); 
+   x.lineTo(cx-rn/2, ny); 
+   x.closePath(); 
+   x.fill();
+   
+   x.fillStyle="#ffffff"; x.font="bold 15px system-ui"; 
+   x.fillText("BUS", cx - rn/2 + (rn/4)*0.35, ny - 35);
+  }
+
+  // 선명한 차선 (흰색 점선 및 실선 경계)
+  for(let i=1; i<numLanes; i++){
+   const xf = (cx-rf/2) + (rf * (i/numLanes));
+   const xn = (cx-rn/2) + (rn * (i/numLanes));
+   
+   x.strokeStyle="#ffffff"; 
+   x.lineWidth = i === 1 && numLanes === 4 ? 4 : 3; // 버스전용차로 경계선 강조
+   x.setLineDash([18, 12]);
+   x.beginPath(); 
+   x.moveTo(xf, hy); 
+   x.lineTo(xn, ny); 
+   x.stroke();
+   x.setLineDash([]);
+  }
+
+  // 갓길 및 중앙 분리선 (노란색 실선)
+  x.strokeStyle="#f59e0b"; x.lineWidth = 5;
+  x.beginPath(); x.moveTo(cx-rn/2, ny); x.lineTo(cx-rf/2, hy); x.stroke();
+  x.beginPath(); x.moveTo(cx+rn/2, ny); x.lineTo(cx+rf/2, hy); x.stroke();
   return;
  }
 
- // 강화 동막·동검도 개방해 ECDIS 지도
+ // --- 수상 모드: 강화 동막·동검도 개방해 ECDIS 지도 ---
  let progress=Math.min(1.0, s.distance/10.0);
  let camX=w*0.25+(w*0.2)*progress, camY=h*0.18+(h*0.7)*progress;
 
@@ -318,6 +344,7 @@ function render(){
  $("h2Text").textContent=s.h2.toFixed(2)+" kg";
  $("steerDisplay").textContent=s.steer<0?`좌 ${Math.abs(Math.round(s.steer))}°`:s.steer>0?`우 ${Math.round(s.steer)}°`:`중앙 0°`;
  $("terrainState").textContent=isWater ? "수상 · 강화 동막해변 항로" : "육상 · 경부고속도로";
+ $("laneDisplay").textContent = isWater ? "수중 항로" : s.lane + "차로";
  $("doorState").textContent=s.doorBusy?"문 닫는 중":s.leftDoor&&s.rightDoor?"양쪽 문 열림":s.leftDoor?"좌측 문 열림":s.rightDoor?"우측 문 열림":"모든 문 닫힘";
 
  drawRoad();
@@ -356,7 +383,7 @@ window.addEventListener("blur",()=>{pressed.clear();s.steer=0;render();});
 
 let last=performance.now();
 function frame(now){const dt=Math.min((now-last)/1000,.05);last=now;update(dt);requestAnimationFrame(frame)}
-log("연두 FCEV 수륙양용 시뮬레이터 로드 완료 (오디오 자동 연동).");
+log("연두 FCEV 수륙양용 시뮬레이터 로드 완료 (차선 가시성 개선).");
 render();requestAnimationFrame(frame);
 </script>
 </body>
